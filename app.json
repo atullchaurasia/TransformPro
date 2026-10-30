@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "TransformPro",
+    "slug": "transformpro",
+    "scheme": "transformpro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "bundleIdentifier": "com.transformpro.app",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Camera is used to scan member QR codes for check-in and take member photos.",
+        "NSPhotoLibraryUsageDescription": "Photo library is used to choose member photos and expense receipts.",
+        "NSFaceIDUsageDescription": "Face ID is used to lock the app and protect your gym's data.",
+        "LSApplicationQueriesSchemes": ["whatsapp", "whatsapp-business", "sms", "tel", "mailto"],
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIFileSharingEnabled": true,
+        "LSSupportsOpeningDocumentsInPlace": true,
+        "UISupportedInterfaceOrientations~ipad": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationPortraitUpsideDown",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ]
+      }
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FF6B2C",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 160
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

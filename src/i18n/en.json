@@ -1,0 +1,191 @@
+{
+  "common": {
+    "appName": "TransformPro",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "done": "Done",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "retry": "Retry",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "clear": "Clear",
+    "select": "Select",
+    "loading": "Loading…",
+    "required": "Required",
+    "optional": "Optional",
+    "yes": "Yes",
+    "no": "No",
+    "today": "Today",
+    "selected": "{{count}} selected",
+    "comingSoon": "Coming soon",
+    "comingSoonIn": "This will be built in milestone {{milestone}}.",
+    "somethingWentWrong": "Something went wrong",
+    "noResults": "No results"
+  },
+  "tabs": {
+    "home": "Home",
+    "members": "Members",
+    "checkin": "Check-in",
+    "payments": "Payments",
+    "more": "More"
+  },
+  "placeholders": {
+    "home": "Your dashboard will appear here.",
+    "members": "Your members list will appear here.",
+    "checkin": "QR scanning and attendance will appear here.",
+    "payments": "Collections and dues will appear here."
+  },
+  "a11y": {
+    "search": "Search members",
+    "lock": "Lock app",
+    "quickActions": "Quick actions",
+    "clearText": "Clear text",
+    "deleteDigit": "Delete digit",
+    "useBiometrics": "Unlock with Face ID",
+    "closeSheet": "Close"
+  },
+  "quickActions": {
+    "title": "Quick actions",
+    "addMember": "Add member",
+    "recordPayment": "Record payment",
+    "markAttendance": "Mark attendance",
+    "addEnquiry": "Add enquiry",
+    "addExpense": "Add expense"
+  },
+  "more": {
+    "groups": {
+      "gym": "Gym",
+      "growth": "Growth",
+      "money": "Money",
+      "data": "Data",
+      "app": "App",
+      "developer": "Developer"
+    },
+    "items": {
+      "plans": "Plans & Pricing",
+      "personalTraining": "Personal Training",
+      "services": "Services",
+      "staff": "Trainers & Staff",
+      "branches": "Branches",
+      "enquiries": "Enquiries / Leads",
+      "messages": "Messages & Reminders",
+      "referrals": "Referrals",
+      "expenses": "Expenses",
+      "reports": "Reports",
+      "backup": "Backup & Restore",
+      "importMembers": "Import Members (CSV)",
+      "exportData": "Export Data",
+      "trash": "Trash",
+      "activityLog": "Activity Log",
+      "settings": "Settings",
+      "cardDesign": "Membership Card Design",
+      "language": "Language",
+      "theme": "Theme",
+      "lockNow": "Lock Now",
+      "switchUser": "Switch User",
+      "help": "Help / About",
+      "uiKit": "UI kit preview",
+      "devDb": "Database inspector"
+    }
+  },
+  "db": {
+    "openFailed": "The gym database couldn't be opened. Your data has not been changed. Please try again.",
+    "newerSchema": "This data was saved by a newer version of TransformPro. Please install the latest version of the app, then open it again."
+  },
+  "devDb": {
+    "title": "Database",
+    "insertSample": "Insert one row in every table",
+    "inserted": "Sample rows inserted",
+    "testForeignKeys": "Test foreign keys",
+    "fkOn": "Foreign keys are enforced",
+    "fkOff": "Foreign keys are NOT enforced",
+    "schemaVersion": "Schema version",
+    "tables": "Rows per table"
+  },
+  "theme": {
+    "title": "Theme",
+    "system": "Match iPhone setting",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "language": {
+    "title": "Language",
+    "en": "English",
+    "hi": "हिन्दी (Hindi)"
+  },
+  "status": {
+    "active": "Active",
+    "expiring": "Expiring soon",
+    "grace": "In grace",
+    "expired": "Expired",
+    "frozen": "Frozen",
+    "upcoming": "Upcoming",
+    "noPlan": "No plan"
+  },
+  "fields": {
+    "selectDate": "Select date",
+    "selectOption": "Select…",
+    "phonePlaceholder": "10-digit mobile number",
+    "amountPlaceholder": "0",
+    "searchPlaceholder": "Search"
+  },
+  "dialog": {
+    "typeToConfirm": "Type {{word}} to confirm",
+    "areYouSure": "Are you sure?"
+  },
+  "states": {
+    "emptyTitle": "Nothing here yet",
+    "errorTitle": "Couldn't load this",
+    "errorMessage": "Please try again. Your data is safe on this iPhone."
+  },
+  "uiKit": {
+    "title": "UI kit",
+    "buttons": "Buttons",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "destructive": "Delete member",
+    "ghost": "Ghost",
+    "inputs": "Inputs",
+    "name": "Full name",
+    "phone": "Phone",
+    "amount": "Amount",
+    "date": "Joining date",
+    "plan": "Plan",
+    "plans": "Plans",
+    "planMonthly": "Monthly",
+    "planQuarterly": "Quarterly",
+    "planYearly": "Yearly",
+    "nameError": "Name is required",
+    "badges": "Status badges",
+    "chips": "Chips & segments",
+    "segmentAll": "All",
+    "segmentActive": "Active",
+    "segmentExpired": "Expired",
+    "list": "List rows",
+    "rowTitle": "Rahul Sharma",
+    "rowSubtitle": "TP0001 · Monthly",
+    "rowValue": "12 days left",
+    "progress": "Progress",
+    "states": "States",
+    "emptyMessage": "Add your first member to get started.",
+    "emptyAction": "Add member",
+    "dialogs": "Dialogs & feedback",
+    "showConfirm": "Show confirm",
+    "showTypedConfirm": "Show typed confirm",
+    "showToast": "Show toast",
+    "showSheet": "Show bottom sheet",
+    "toastMessage": "Payment of ₹2,000 recorded",
+    "sheetBody": "Bottom sheets hold quick actions.",
+    "pin": "PIN keypad",
+    "confirmTitle": "Delete this member?",
+    "confirmMessage": "They will be moved to Trash.",
+    "typedTitle": "Delete permanently?",
+    "typedMessage": "This cannot be undone."
+  }
+}

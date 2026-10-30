@@ -1,0 +1,191 @@
+{
+  "common": {
+    "appName": "TransformPro",
+    "ok": "ठीक है",
+    "cancel": "रद्द करें",
+    "confirm": "पुष्टि करें",
+    "save": "सेव करें",
+    "delete": "हटाएँ",
+    "done": "हो गया",
+    "edit": "बदलें",
+    "add": "जोड़ें",
+    "search": "खोजें",
+    "retry": "फिर से कोशिश करें",
+    "back": "वापस",
+    "next": "आगे",
+    "close": "बंद करें",
+    "clear": "साफ़ करें",
+    "select": "चुनें",
+    "loading": "लोड हो रहा है…",
+    "required": "ज़रूरी",
+    "optional": "वैकल्पिक",
+    "yes": "हाँ",
+    "no": "नहीं",
+    "today": "आज",
+    "selected": "{{count}} चुने गए",
+    "comingSoon": "जल्द आ रहा है",
+    "comingSoonIn": "यह माइलस्टोन {{milestone}} में बनाया जाएगा।",
+    "somethingWentWrong": "कुछ गड़बड़ हो गई",
+    "noResults": "कोई परिणाम नहीं"
+  },
+  "tabs": {
+    "home": "होम",
+    "members": "सदस्य",
+    "checkin": "चेक-इन",
+    "payments": "भुगतान",
+    "more": "और"
+  },
+  "placeholders": {
+    "home": "आपका डैशबोर्ड यहाँ दिखेगा।",
+    "members": "आपके सदस्यों की सूची यहाँ दिखेगी।",
+    "checkin": "QR स्कैन और हाज़िरी यहाँ दिखेगी।",
+    "payments": "कलेक्शन और बकाया यहाँ दिखेंगे।"
+  },
+  "a11y": {
+    "search": "सदस्य खोजें",
+    "lock": "ऐप लॉक करें",
+    "quickActions": "त्वरित कार्य",
+    "clearText": "टेक्स्ट साफ़ करें",
+    "deleteDigit": "अंक हटाएँ",
+    "useBiometrics": "Face ID से खोलें",
+    "closeSheet": "बंद करें"
+  },
+  "quickActions": {
+    "title": "त्वरित कार्य",
+    "addMember": "सदस्य जोड़ें",
+    "recordPayment": "भुगतान दर्ज करें",
+    "markAttendance": "हाज़िरी लगाएँ",
+    "addEnquiry": "पूछताछ जोड़ें",
+    "addExpense": "खर्च जोड़ें"
+  },
+  "more": {
+    "groups": {
+      "gym": "जिम",
+      "growth": "ग्रोथ",
+      "money": "पैसा",
+      "data": "डेटा",
+      "app": "ऐप",
+      "developer": "डेवलपर"
+    },
+    "items": {
+      "plans": "प्लान और कीमतें",
+      "personalTraining": "पर्सनल ट्रेनिंग",
+      "services": "सेवाएँ",
+      "staff": "ट्रेनर और स्टाफ़",
+      "branches": "ब्रांच",
+      "enquiries": "पूछताछ / लीड्स",
+      "messages": "संदेश और रिमाइंडर",
+      "referrals": "रेफ़रल",
+      "expenses": "खर्च",
+      "reports": "रिपोर्ट",
+      "backup": "बैकअप और रीस्टोर",
+      "importMembers": "सदस्य इम्पोर्ट करें (CSV)",
+      "exportData": "डेटा एक्सपोर्ट करें",
+      "trash": "ट्रैश",
+      "activityLog": "गतिविधि लॉग",
+      "settings": "सेटिंग्स",
+      "cardDesign": "मेंबरशिप कार्ड डिज़ाइन",
+      "language": "भाषा",
+      "theme": "थीम",
+      "lockNow": "अभी लॉक करें",
+      "switchUser": "यूज़र बदलें",
+      "help": "मदद / जानकारी",
+      "uiKit": "UI किट प्रीव्यू",
+      "devDb": "डेटाबेस इंस्पेक्टर"
+    }
+  },
+  "db": {
+    "openFailed": "जिम का डेटाबेस नहीं खुल सका। आपका डेटा नहीं बदला गया है। कृपया फिर से कोशिश करें।",
+    "newerSchema": "यह डेटा TransformPro के नए वर्ज़न से सेव किया गया था। कृपया ऐप का नया वर्ज़न इंस्टॉल करें, फिर दोबारा खोलें।"
+  },
+  "devDb": {
+    "title": "डेटाबेस",
+    "insertSample": "हर टेबल में एक पंक्ति डालें",
+    "inserted": "सैंपल पंक्तियाँ डाली गईं",
+    "testForeignKeys": "फ़ॉरेन की जाँचें",
+    "fkOn": "फ़ॉरेन की लागू हैं",
+    "fkOff": "फ़ॉरेन की लागू नहीं हैं",
+    "schemaVersion": "स्कीमा वर्ज़न",
+    "tables": "हर टेबल में पंक्तियाँ"
+  },
+  "theme": {
+    "title": "थीम",
+    "system": "iPhone सेटिंग के अनुसार",
+    "light": "लाइट",
+    "dark": "डार्क"
+  },
+  "language": {
+    "title": "भाषा",
+    "en": "English (अंग्रेज़ी)",
+    "hi": "हिन्दी"
+  },
+  "status": {
+    "active": "सक्रिय",
+    "expiring": "जल्द समाप्त",
+    "grace": "ग्रेस अवधि में",
+    "expired": "समाप्त",
+    "frozen": "रुका हुआ",
+    "upcoming": "आगामी",
+    "noPlan": "कोई प्लान नहीं"
+  },
+  "fields": {
+    "selectDate": "तारीख चुनें",
+    "selectOption": "चुनें…",
+    "phonePlaceholder": "10 अंकों का मोबाइल नंबर",
+    "amountPlaceholder": "0",
+    "searchPlaceholder": "खोजें"
+  },
+  "dialog": {
+    "typeToConfirm": "पुष्टि के लिए {{word}} लिखें",
+    "areYouSure": "क्या आप निश्चित हैं?"
+  },
+  "states": {
+    "emptyTitle": "अभी यहाँ कुछ नहीं है",
+    "errorTitle": "यह लोड नहीं हो सका",
+    "errorMessage": "कृपया फिर से कोशिश करें। आपका डेटा इस iPhone पर सुरक्षित है।"
+  },
+  "uiKit": {
+    "title": "UI किट",
+    "buttons": "बटन",
+    "primary": "मुख्य",
+    "secondary": "दूसरा",
+    "destructive": "सदस्य हटाएँ",
+    "ghost": "सादा",
+    "inputs": "इनपुट",
+    "name": "पूरा नाम",
+    "phone": "फ़ोन",
+    "amount": "राशि",
+    "date": "जॉइनिंग तारीख",
+    "plan": "प्लान",
+    "plans": "प्लान",
+    "planMonthly": "मासिक",
+    "planQuarterly": "त्रैमासिक",
+    "planYearly": "वार्षिक",
+    "nameError": "नाम ज़रूरी है",
+    "badges": "स्टेटस बैज",
+    "chips": "चिप्स और सेगमेंट",
+    "segmentAll": "सभी",
+    "segmentActive": "सक्रिय",
+    "segmentExpired": "समाप्त",
+    "list": "लिस्ट रो",
+    "rowTitle": "राहुल शर्मा",
+    "rowSubtitle": "TP0001 · मासिक",
+    "rowValue": "12 दिन बाकी",
+    "progress": "प्रगति",
+    "states": "स्थितियाँ",
+    "emptyMessage": "शुरू करने के लिए अपना पहला सदस्य जोड़ें।",
+    "emptyAction": "सदस्य जोड़ें",
+    "dialogs": "डायलॉग और सूचना",
+    "showConfirm": "पुष्टि दिखाएँ",
+    "showTypedConfirm": "टाइप-पुष्टि दिखाएँ",
+    "showToast": "टोस्ट दिखाएँ",
+    "showSheet": "बॉटम शीट दिखाएँ",
+    "toastMessage": "₹2,000 का भुगतान दर्ज हुआ",
+    "sheetBody": "बॉटम शीट में त्वरित कार्य होते हैं।",
+    "pin": "PIN कीपैड",
+    "confirmTitle": "यह सदस्य हटाएँ?",
+    "confirmMessage": "उन्हें ट्रैश में भेज दिया जाएगा।",
+    "typedTitle": "हमेशा के लिए हटाएँ?",
+    "typedMessage": "इसे वापस नहीं लाया जा सकता।"
+  }
+}
