@@ -10,8 +10,9 @@ type PreferencesState = {
   setLanguage: (language: LanguageCode) => void;
 };
 
-// In-memory for now. TODO(M04): hydrate from and persist to the `settings` table
-// (`theme`, `language` keys) once the settings repository exists.
+// What the UI renders with right now. Persisted values live in the `settings` table:
+// settingsStore.hydrate/update push `theme` and `language` here. Before onboarding is
+// finished (no settings yet) the Welcome step sets the language directly.
 export const usePreferencesStore = create<PreferencesState>((set) => ({
   theme: 'system',
   language: 'en',

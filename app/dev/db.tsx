@@ -4,6 +4,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Button, ErrorState, GroupedSection, ListRow, ScreenScroll, SkeletonList } from '@/components';
+import { insertDemoMembers } from '@/features/dev/devBulkMembers';
 import { ALL_TABLES, foreignKeysEnforced, insertDevSample, schemaVersion, tableCounts } from '@/features/dev/devSampleData';
 import { useDataVersion } from '@/store/dataVersionStore';
 import { toast } from '@/store/feedbackStore';
@@ -58,6 +59,17 @@ export default function DevDbScreen() {
           onPress={() => run(async () => {
             await insertDevSample();
             toast.success(t('devDb.inserted'));
+          })}
+        />
+        <Button
+          label={t('devDb.insertDemoMembers')}
+          variant="secondary"
+          icon="people"
+          loading={busy}
+          fullWidth
+          onPress={() => run(async () => {
+            const n = await insertDemoMembers(2000);
+            toast.success(t('devDb.demoInserted', { count: n }));
           })}
         />
         <Button

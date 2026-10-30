@@ -81,3 +81,11 @@ PT and service subscriptions have their own status shown separately on the profi
   other formats when country code ≠ +91.
 - **Duplicate check**: warn when adding a member/enquiry whose phone already exists
   (offer "Open existing").
+
+### Clarifications (M03, see CLAUDE.md Decisions Log 2026-10-30)
+
+- §6.2: when the month is too short (31 Jan + 1 month) the end is the last day of that month (28/29 Feb).
+- §6.1: "Expiring soon" counts to the end of back-to-back renewals.
+- §6.4: plan freeze limits of 0 mean "no limit".
+- §6.6: with inclusive GST the total is base + admission − discount, and the tax is the GST inside it.
+- §6.8: Upcoming and No-plan members follow `checkin_block_expired`; used-up session plans always block.

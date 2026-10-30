@@ -17,8 +17,13 @@ export function netPaid(subscriptionId: string | null, payments: DuesPayment[]):
  * more: cancelling settles it (any refund is recorded separately).
  */
 export function subscriptionDue(sub: DuesSubscription, payments: DuesPayment[]): Paise {
+  return dueFromNet(sub, netPaid(sub.id, payments));
+}
+
+/** Same rule when the net paid amount was already summed in SQL (lists of 2,000+ members). */
+export function dueFromNet(sub: Pick<Subscription, 'totalPaise' | 'status'>, netPaidPaise: Paise): Paise {
   if (sub.status === 'cancelled') return 0;
-  return Math.max(0, sub.totalPaise - netPaid(sub.id, payments));
+  return Math.max(0, sub.totalPaise - netPaidPaise);
 }
 
 /** Most that can be refunded against a subscription: what was actually paid on it. */

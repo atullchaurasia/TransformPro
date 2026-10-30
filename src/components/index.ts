@@ -11,6 +11,7 @@ export { Card } from './Card';
 export { Chip, FAB, ProgressBar, SegmentedControl } from './Controls';
 export { DateField } from './DateField';
 export { FeedbackHost } from './FeedbackHost';
+export { FieldButton } from './FieldButton';
 export { GroupedSection, SectionHeader } from './GroupedSection';
 export { Icon } from './Icon';
 export type { IconName } from './Icon';

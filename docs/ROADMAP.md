@@ -11,10 +11,10 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M00 | Project setup & tooling | Foundation | ✅ |
 | M01 | Theme, UI kit, i18n skeleton, navigation shell | Foundation | ✅ |
 | M02 | Database: client, migrations, full schema, repositories | Foundation | ✅ |
-| M03 | Domain logic + unit tests | Foundation | ⬜ |
-| M04 | Onboarding, settings, app lock, staff session | Foundation | ⬜ |
-| M05 | Plans, PT & services | Core ops | ⬜ |
-| M06 | Members: list, add/edit with plan & payment, trash | Core ops | ⬜ |
+| M03 | Domain logic + unit tests | Foundation | ✅ |
+| M04 | Onboarding, settings, app lock, staff session | Foundation | ✅ |
+| M05 | Plans, PT & services | Core ops | ✅ |
+| M06 | Members: list, add/edit with plan & payment, trash | Core ops | ✅ |
 | M07 | Member profile + subscription lifecycle | Core ops | ⬜ |
 | M08 | Payments, dues, refunds, receipt PDF | Core ops | ⬜ |
 | M09 | Check-in: search, today's list, QR, kiosk, history | Core ops | ⬜ |
@@ -70,6 +70,18 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M02 | App boots with no DB error; More → Developer → Database shows schema version 1 and all 18 tables | ⬜ |
 | M02 | "Insert one row in every table" succeeds; counts go up by one each; counts survive an app restart | ⬜ |
 | M02 | "Test foreign keys" reports **enforced** on the real device | ⬜ |
+| M04 | Fresh install → onboarding (all 7 steps, logo pick, PIN twice, EN/HI switch on Welcome) → lands on Home | ⬜ |
+| M04 | Kill + reopen → lock screen; PIN unlocks; Face ID unlocks (passcode fallback in Expo Go is OK) | ⬜ |
+| M04 | 5 wrong PINs → 30 s cooldown (survives force-quit), next 5 → 60 s | ⬜ |
+| M04 | Background > 1 min → relocks; < 1 min → doesn't; Lock now / Switch user from More and the Home lock icon | ⬜ |
+| M04 | Forgot PIN: with Face ID → reset works; without → reinstall/restore instructions | ⬜ |
+| M04 | Theme / language chosen in More survive an app restart | ⬜ |
+| M05 | More → Plans / Personal Training / Services open the right segment; add, edit, reorder (↑↓), deactivate and delete work; counts and prices look right in light + dark | ⬜ |
+| M06 | Add member with photo (camera + library), Monthly + PT + a service, partial payment → success sheet; the list shows Active and the right due in red | ⬜ |
+| M06 | Search (name / phone / code), status chips, Filters sheet, Sort; swipe Call / WhatsApp opens the apps | ⬜ |
+| M06 | Long-press → multi-select → Assign trainer and Move to Trash; Trash → Restore and Delete permanently (type DELETE) | ⬜ |
+| M06 | Developer → Insert 2,000 demo members → the list scrolls smoothly and search stays instant | ⬜ |
+| M06 | Duplicate phone warning appears; Edit member saves; Home search finds members | ⬜ |
 
 ### Cross-cutting checklist (every milestone)
 
@@ -149,27 +161,29 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
 
 ### M03 · Domain logic + unit tests
 **Spec:** `business-rules.md` (§6), `staff-permissions-branches.md` (§15)
-- [ ] `dates.ts`: end dates (§6.2): months → `addMonths − 1 day`, days → `start + n − 1`, years → `addYears − 1 day`, sessions → start + validity (default 90 days); date-only helpers using date-fns only
-- [ ] `membershipStatus.ts` (§6.1): ignore cancelled subscriptions; Upcoming, Active, Frozen, Expiring soon, In grace, Expired, No plan; `daysLeft`, `daysSinceExpiry`, current plan name, current trainer; separate status for PT and services
-- [ ] Renewal (§6.3): active/expiring → old end + 1; expired → today, or the "start from expiry date" option; owner override; `renewed_from_subscription_id`
-- [ ] Freeze (§6.4): fixed N days or open-ended; on unfreeze `end_date += days`, `frozen_days_total += days`; `max_freeze_days` / `max_freeze_times` checks with an override flag
-- [ ] `dues.ts` (§6.5): subscription due = total − (payments − refunds); member due = subscription dues + unlinked charges; split a payment across subscriptions oldest first; overpayment error unless recorded as an advance; advance applied automatically to the next subscription
-- [ ] `money.ts` (§6.6): paise ↔ rupees; `Intl.NumberFormat('en-IN')` with Indian grouping, `.00` hidden when whole; GST inclusive/exclusive; CGST/SGST half split when GSTIN set; subscription total = base + admission − discount (₹ or %) + tax
-- [ ] `codes.ts` (§6.7): prefix + zero-padded number for member codes and receipts
-- [ ] Phones (§6.9): strip spaces, dashes and leading 0; prepend country digits to 10-digit numbers; Indian mobile regex when +91, other formats allowed otherwise
-- [ ] Check-in evaluator (§6.8): block if expired (setting), frozen, has dues (setting); override allowed; one per day unless the setting allows more; already in → offer check-out; session plans count usage and block at 0 left; grace counts as active
-- [ ] Auto check-out rule: open check-ins older than `auto_checkout_hours` (§6.8)
-- [ ] `templates.ts`: render all 15 placeholders from §10.7
-- [ ] `permissions.ts`: every §15 key, role defaults (owner / manager / receptionist / trainer per §10.13), `can(staff, key)`
-- [ ] BMI calculation (for M17 measurements)
-- [ ] Jest tests for **all** of the above, including 31 Jan + 1 month, leap years, grace boundaries, expiring-soon boundary, partial payments + refunds, advance, freeze limits, session exhaustion, phone formats
+- [x] `dates.ts`: end dates (§6.2): months → `addMonths − 1 day`, days → `start + n − 1`, years → `addYears − 1 day`, sessions → start + validity (default 90 days); date-only helpers using date-fns only
+- [x] `membershipStatus.ts` (§6.1): ignore cancelled subscriptions; Upcoming, Active, Frozen, Expiring soon, In grace, Expired, No plan; `daysLeft`, `daysSinceExpiry`, current plan name, current trainer; separate status for PT and services
+- [x] Renewal (§6.3, `renewal.ts`): active/expiring → old end + 1; expired → today, or the "start from expiry date" option; owner override; `renewed_from_subscription_id`
+- [x] Freeze (§6.4, `freeze.ts`): fixed N days or open-ended; on unfreeze `end_date += days`, `frozen_days_total += days`; `max_freeze_days` / `max_freeze_times` checks with an override flag
+- [x] `dues.ts` (§6.5): subscription due = total − (payments − refunds); member due = subscription dues + unlinked charges; split a payment across subscriptions oldest first; overpayment error unless recorded as an advance; advance applied automatically to the next subscription
+- [x] `money.ts` (§6.6): paise ↔ rupees; `Intl.NumberFormat('en-IN')` with Indian grouping, `.00` hidden when whole; GST inclusive/exclusive; CGST/SGST half split when GSTIN set; subscription total = base + admission − discount (₹ or %) + tax
+- [x] `codes.ts` (§6.7): prefix + zero-padded number for member codes and receipts (+ QR payload `TRANSFORMPRO:<code>` parse/build)
+- [x] Phones (§6.9, `phones.ts`): strip spaces, dashes and leading 0; prepend country digits to 10-digit numbers; Indian mobile regex when +91, other formats allowed otherwise; `samePhone` for the duplicate check
+- [x] Check-in evaluator (§6.8, `checkin.ts`): block if expired (setting), frozen, has dues (setting); override allowed; one per day unless the setting allows more; already in → offer check-out; session plans count usage and block at 0 left; grace counts as active
+- [x] Auto check-out rule: open check-ins older than `auto_checkout_hours` (§6.8)
+- [x] `templates.ts`: render all 15 placeholders from §10.7
+- [x] `permissions.ts`: every §15 key, role defaults (owner / manager / receptionist / trainer per §10.13), `can(staff, key)`
+- [x] BMI calculation (`bmi.ts`, for M17 measurements)
+- [x] Jest tests for **all** of the above, including 31 Jan + 1 month, leap years, grace boundaries, expiring-soon boundary, partial payments + refunds, advance, freeze limits, session exhaustion, phone formats
 
 **Done when:** `npm test` is green and every §6 rule has at least one test.
 
+> Status: ✅ tsc · ✅ jest (129 tests, 14 suites) · pure logic, no device checks needed. The parts of §6 that need the DB or UI are owned by later milestones: atomic code increments (M06, M08), duplicate-phone warning (M06, M16), override reason + audit (M09), auto check-out on app open (M09, M11), freeze auto-end (M07), `<Can>` component (M04).
+
 ### M04 · Onboarding, settings, app lock, staff session
 **Spec:** `onboarding-security.md` (§7–8), `database.md` (settings keys)
-- [ ] Settings repository + zustand cache with typed defaults for **every** settings key in §5.2
-- [ ] Onboarding wizard with progress dots and Back/Next (§7):
+- [x] Settings repository + zustand cache with typed defaults for **every** settings key in §5.2
+- [x] Onboarding wizard with progress dots and Back/Next (§7):
   1. Welcome: app name, "Your data stays only on this iPhone", language picker
   2. Gym details: name (required), logo from photos, phone, address, email, GSTIN
   3. Owner: name, phone, 4–6 digit PIN entered twice, Face ID toggle (only if the device supports it); explain clearly that a forgotten PIN can't be recovered online
@@ -177,18 +191,20 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
   5. Plans: seeded plans with price fields; add and remove
   6. "Already have a backup? Restore it" (register → M11)
   7. Done: `onboarding_complete = true`, schedule notifications (register → M15), go to Dashboard
-- [ ] Seeding: default branch; exactly one owner row (can't be deleted or demoted); plans (Monthly, Quarterly, Half-Yearly, Yearly at ₹0, PT Monthly, Locker, Diet Plan, Steam Bath); 12 expense categories (§5.2); system message templates in EN + HI (full wording in M14)
-- [ ] PIN stored as `SHA-256(salt + pin)` via expo-crypto; salt and lock settings in expo-secure-store (§1, §8)
-- [ ] Lock screen: staff avatars → tap → PIN keypad; Face ID / Touch ID when enabled
-- [ ] 5 wrong PINs → 30 s cooldown, doubling each time
-- [ ] Forgot PIN (owner): "Unlock with Face ID to reset PIN" if biometrics are on, otherwise the backup/reinstall instructions
-- [ ] Locks on cold start and after the background time exceeds `lock_after_minutes`
-- [ ] "Lock now" and "Switch user" in More
-- [ ] Session store (current staff) used for `created_by`, `received_by`, the audit log and permissions; `<Can permission>` component
-- [ ] `useMasked()` → shows "••••" for revenue/collection numbers without `reports.financial`
-- [ ] Audit log for login and logout
+- [x] Seeding: default branch; exactly one owner row (can't be deleted or demoted); plans (Monthly, Quarterly, Half-Yearly, Yearly at ₹0, PT Monthly, Locker, Diet Plan, Steam Bath); 12 expense categories (§5.2); system message templates in EN + HI (full wording in M14)
+- [x] PIN stored as `SHA-256(salt + pin)` via expo-crypto; per-staff salt + hash on the staff row (travels with backups); lock settings and the wrong-PIN lockout in expo-secure-store (§1, §8 — Decisions Log M04)
+- [x] Lock screen: staff avatars → tap → PIN keypad; Face ID / Touch ID when enabled
+- [x] 5 wrong PINs → 30 s cooldown, doubling each time
+- [x] Forgot PIN (owner): "Unlock with Face ID to reset PIN" if biometrics are on, otherwise the backup/reinstall instructions
+- [x] Locks on cold start and after the background time exceeds `lock_after_minutes`
+- [x] "Lock now" and "Switch user" in More
+- [x] Session store (current staff) used for `created_by`, `received_by`, the audit log and permissions; `<Can permission>` component
+- [x] `useMasked()` → shows "••••" for revenue/collection numbers without `reports.financial`
+- [x] Audit log for login and logout
 
 **Done when:** a fresh install → onboarding → lock screen; PIN and Face ID unlock; the cooldown works; it relocks after the background timeout; Face ID inside Expo Go may fall back to the passcode, which is acceptable.
+
+> Status: ✅ tsc · ✅ jest (145 tests: settings defaults/validation, lockout, PIN hashing, onboarding seed in real SQLite, form schemas) · ✅ expo-doctor 20/20 · ✅ iOS bundle exports. On-device checks → Pending device checks.
 
 ---
 
@@ -196,35 +212,40 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
 
 ### M05 · Plans, PT & services
 **Spec:** `plans.md` (§10.3), `database.md` (plans)
-- [ ] Segments: Memberships, Personal Training, Services
-- [ ] List showing price, duration, colour badge and **active member count** per plan
-- [ ] Add/edit (zod): name, category, duration value + unit (days/months/years/sessions), session count, price, admission fee, max freeze days and times, colour, description
-- [ ] Services can have a duration or be one-time
-- [ ] Reorder (`sort_order`), deactivate (hidden from pickers, history kept), soft delete
-- [ ] Editing a price never changes existing subscriptions (snapshots)
-- [ ] Reachable from More → Plans & Pricing / Personal Training / Services
+- [x] Segments: Memberships, Personal Training, Services
+- [x] List showing price, duration, colour badge and **active member count** per plan
+- [x] Add/edit (zod): name, category, duration value + unit (days/months/years/sessions), session count, price, admission fee, max freeze days and times, colour, description
+- [x] Services can have a duration or be one-time
+- [x] Plan form explains that max freeze days/times **0 = no limit** (M03 decision); sessions plans take a validity in days (default 90, `DEFAULT_SESSION_VALIDITY_DAYS`) — decide where it's stored (e.g. `duration_value` = validity days when unit is `sessions`, `session_count` = sessions) and pass it to `computeEndDate`
+- [x] Reorder (`sort_order`), deactivate (hidden from pickers, history kept), soft delete
+- [x] Editing a price never changes existing subscriptions (snapshots)
+- [x] Reachable from More → Plans & Pricing / Personal Training / Services
 
 **Done when:** plans can be created, edited, reordered and deactivated, and inactive plans disappear from pickers.
 
+> Status: ✅ tsc · ✅ jest (154 tests; active-member counts, picker filtering and price snapshots tested against real SQLite) · ✅ expo-doctor 20/20 · ✅ iOS bundle exports. Pickers use `listActivePlans` (first used in M06). Add/edit/reorder/deactivate/delete need `plans.manage`. On-device checks → Pending device checks.
+
 ### M06 · Members: list, add/edit, trash
 **Spec:** `members.md` (§10.2 list, form, trash), `business-rules.md` §6.7, §6.9
-- [ ] **List:** FlashList (FlatList fallback); search by name, phone or code (200 ms debounce, SQL `LIKE`); result count in the header
-- [ ] **Filter chips:** All, Active, Expiring soon, Expired, Frozen, Upcoming, No plan, Has dues, Birthday this month, PT members, Gender, Plan (multi-select), Trainer, Branch (hidden while there's a single branch), Joined date range
-- [ ] **Sort:** Name A–Z, Newest, Expiry soonest, Due highest, Last visit
-- [ ] **Row:** photo or coloured initials, name, code, phone, plan, status badge, "12 days left" / "Expired 5d ago", due in red
-- [ ] **Swipe:** Call, WhatsApp (plain message now, templates in M14), Check-in (register → M09), Renew (register → M07)
-- [ ] **Multi-select:** move to trash, assign trainer, send message (register → M14), export selected (register → M11), change branch (register → M19)
-- [ ] Empty state "Add your first member"
-- [ ] **Form** (collapsible sections; only name, phone and joining date required): photo (camera or library, square crop, max 800 px JPEG 0.7 via `services/photos.ts`); basic (full name, phone + prefix, alt phone, email, gender, DOB with calculated age, anniversary); address (address, area, city, pincode, occupation); health (blood group, height, medical conditions, fitness goal); emergency contact (name, phone, relation); ID proof (Aadhaar / PAN / Driving Licence / Voter ID / Passport / Other + number; Aadhaar shows only the last 4 digits in lists); gym (member code auto-filled and editable but unique, joining date default today, branch, assigned trainer, source, referred-by member search, notes)
-- [ ] Duplicate-phone warning with "Open existing"
-- [ ] **Step 2: Plan & Payment** (add only, can be skipped): plan → start date (today) → auto end date (editable) → price → admission fee toggle → discount ₹ or % + reason → tax line if enabled → total → paid now (defaults to total) → mode → reference → balance due; optional PT plan (with trainer) and services in the same flow; advances apply automatically
-- [ ] Save in **one transaction**: member + subscription(s) + payment(s) + member code increment + audit entry
-- [ ] **Success sheet:** Send welcome (WhatsApp; templated in M14), Share receipt (register → M08), Share card (register → M13), Add another, Done
-- [ ] Edit member (same form, without step 2)
-- [ ] **Trash:** members tab (payments, expenses and enquiries tabs added by M08, M17 and M16 — register); restore; delete permanently (owner only, type "DELETE"); auto-purge items older than 30 days on app open, with a setting to turn it off
-- [ ] **Global search** (header on Home and Members): members by name, phone or code (enquiries added in M16 — register)
+- [x] **List:** FlashList (FlatList fallback); search by name, phone or code (200 ms debounce, SQL `LIKE`); result count in the header
+- [x] **Filter chips:** All, Active, Expiring soon, Expired, Frozen, Upcoming, No plan, Has dues, Birthday this month, PT members, Gender, Plan (multi-select), Trainer, Branch (hidden while there's a single branch), Joined date range
+- [x] **Sort:** Name A–Z, Newest, Expiry soonest, Due highest, Last visit
+- [x] **Row:** photo or coloured initials, name, code, phone, plan, status badge, "12 days left" / "Expired 5d ago", due in red
+- [x] **Swipe:** Call, WhatsApp (plain message now, templates in M14), Check-in (register → M09), Renew (register → M07)
+- [x] **Multi-select:** move to trash, assign trainer, send message (register → M14), export selected (register → M11), change branch (register → M19)
+- [x] Empty state "Add your first member"
+- [x] **Form** (collapsible sections; only name, phone and joining date required): photo (camera or library, square crop, max 800 px JPEG 0.7 via `services/photos.ts`); basic (full name, phone + prefix, alt phone, email, gender, DOB with calculated age, anniversary); address (address, area, city, pincode, occupation); health (blood group, height, medical conditions, fitness goal); emergency contact (name, phone, relation); ID proof (Aadhaar / PAN / Driving Licence / Voter ID / Passport / Other + number; Aadhaar shows only the last 4 digits in lists); gym (member code auto-filled and editable but unique, joining date default today, branch, assigned trainer, source, referred-by member search, notes)
+- [x] Duplicate-phone warning with "Open existing"
+- [x] **Step 2: Plan & Payment** (add only, can be skipped): plan → start date (today) → auto end date (editable) → price → admission fee toggle → discount ₹ or % + reason → tax line if enabled → total → paid now (defaults to total) → mode → reference → balance due; optional PT plan (with trainer) and services in the same flow; advances apply automatically
+- [x] Save in **one transaction**: member + subscription(s) + payment(s) + member code increment + audit entry
+- [x] **Success sheet:** Send welcome (WhatsApp; templated in M14), Share receipt (register → M08), Share card (register → M13), Add another, Done
+- [x] Edit member (same form, without step 2)
+- [x] **Trash:** members tab (payments, expenses and enquiries tabs added by M08, M17 and M16 — register); restore; delete permanently (owner only, type "DELETE"); auto-purge items older than 30 days on app open, with a setting to turn it off
+- [x] **Global search** (header on Home and Members): members by name, phone or code (enquiries added in M16 — register)
 
 **Done when:** a member added with a partial payment shows the correct status and due amount; 2,000 demo rows scroll smoothly.
+
+> Status: ✅ tsc · ✅ jest (170 tests; add-member transaction, code/receipt allocation, dues in the list, search, duplicate phones, trash purge + cascade against real SQLite) · ✅ expo-doctor 20/20 · ✅ iOS bundle exports. 2,000-row scroll uses More → Developer → "Insert 2,000 demo members". On-device checks → Pending device checks.
 
 ### M07 · Member profile + subscription lifecycle
 **Spec:** `members.md` (profile), `business-rules.md` §6.1, §6.3, §6.4
@@ -233,7 +254,8 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
 - [ ] **Overview tab:** current membership (plan, start, end, days-left progress bar), PT plan + trainer + sessions left, services, lifetime paid, total due, last visit, visits this month, member since, referred by / referrals made, notes
 - [ ] **Plans tab:** timeline of all subscriptions with status, dates, amounts, paid and due. Actions:
   - Renew: default start date per §6.3, "start from expiry date" option for expired plans, override
-  - Freeze (N days or open-ended) / Unfreeze, enforcing plan limits unless `membership.freeze_override`
+  - Freeze (N days or open-ended) / Unfreeze, enforcing plan limits unless `membership.freeze_override` (`checkFreeze`; on unfreeze `frozenDaysOnEnd` + `applyUnfreeze`, re-checking `remainingFreezeDays` for open-ended freezes)
+  - Fixed-length freezes whose last day has passed (`isFreezeOver`) are closed automatically — on profile load and in the start-up pipeline (M11) — extending the end date by the frozen days
   - Extend end date (with a reason)
   - Change plan (upgrade, showing the proration suggestion)
   - Cancel (reason + refund amount)
@@ -456,14 +478,17 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Stub | Created in | Finished in | Done |
 |---|---|---|---|
 | More-menu items "Coming in Mxx" | M01 | each owning milestone | ⬜ |
-| Theme & language preferences persisted to settings (in-memory until then) | M01 | M04 | ⬜ |
-| Home header "Lock" button | M01 | M04 | ⬜ |
-| Home / Members header "Search" button (global search) | M01 | M06 | ⬜ |
-| FAB "Add member" | M01 | M06 | ⬜ |
+| Theme & language preferences persisted to settings (in-memory until then) | M01 | M04 | ✅ |
+| Home header "Lock" button | M01 | M04 | ✅ |
+| Home / Members header "Search" button (global search) | M01 | M06 | ✅ |
+| FAB "Add member" | M01 | M06 | ✅ |
 | FAB "Record payment" | M01 | M08 | ⬜ |
 | FAB "Mark attendance" | M01 | M09 | ⬜ |
 | Onboarding "Restore a backup" | M04 | M11 | ⬜ |
 | Onboarding "Done" schedules notifications | M04 | M15 | ⬜ |
+| Members row tap + duplicate-phone "Open" → member profile (open the edit form until then) | M06 | M07 | ⬜ |
+| Show ID numbers with `maskIdNumber` (Aadhaar last 4) wherever they appear in lists/profile | M06 | M07 | ⬜ |
+| Settings toggle for `trash_auto_purge` (default on) | M06 | M20 | ⬜ |
 | Members swipe "Check-in" | M06 | M09 | ⬜ |
 | Members swipe "Renew" | M06 | M07 | ⬜ |
 | Members swipe / profile WhatsApp with templates | M06/M07 | M14 | ⬜ |
@@ -492,6 +517,9 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Start-up pipeline: reschedule notifications | M11 | M15 | ⬜ |
 | PT trainer picker / "My PT clients" | M05/M06 | M19 | ⬜ |
 | Permission gating on all earlier screens | M04 | M19 | ⬜ |
+| `AppGate` start-up hook (`TODO(M11)`): auto check-out, trash purge, daily auto-backup | M04 | M11 | ⬜ |
+| Security settings (lock on/off, auto-lock minutes, Face ID toggle, change PIN) — must go through `settingsStore.update` so the Keychain copy stays in sync | M04 | M20 | ⬜ |
+| Staff PINs set/reset by the owner (lock screen already lists every active staff member with a PIN) | M04 | M19 | ⬜ |
 
 ---
 

@@ -4,12 +4,16 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider as NavigationThemeProvide
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { FeedbackHost } from '@/components';
+import { AppGate } from '@/features/app/AppGate';
 import { DatabaseGate } from '@/features/app/DatabaseGate';
-import { applyLanguage, deviceLanguage } from '@/i18n';
+import { applyLanguage } from '@/i18n';
 import { usePreferencesStore } from '@/store/preferencesStore';
+import { useSessionStore } from '@/store/sessionStore';
+import { useSettingsStore } from '@/store/settingsStore';
 import { ThemeProvider, useTheme } from '@/theme';
 
 /** Keeps i18next in step with the language preference — switching is instant (spec §11). */
@@ -43,41 +47,58 @@ function NavigationTheme({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Route guards (spec §7–8): onboarding until it's complete, then the lock screen until a
+ * staff member unlocks. Leaving a guard (e.g. auto-lock) redirects automatically.
+ */
 function RootStack() {
   const { t } = useTranslation();
   const { scheme } = useTheme();
+  const onboarded = useSettingsStore((s) => s.settings.onboarding_complete);
+  const locked = useSessionStore((s) => s.locked);
   return (
     <>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerBackButtonDisplayMode: 'minimal' }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Protected guard={!onboarded}>
+          <Stack.Screen name="onboarding/index" options={{ headerShown: false, gestureEnabled: false }} />
+        </Stack.Protected>
+        <Stack.Protected guard={onboarded && locked}>
+          <Stack.Screen name="lock" options={{ headerShown: false, gestureEnabled: false, animation: 'fade' }} />
+        </Stack.Protected>
+        <Stack.Protected guard={onboarded && !locked}>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="plans/edit" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="member/new" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="member/[id]/edit" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="search" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="dev/ui-kit" options={{ title: t('uiKit.title') }} />
+          <Stack.Screen name="dev/db" options={{ title: t('devDb.title') }} />
+        </Stack.Protected>
+        {/* Reachable from onboarding too (e.g. "Restore" → Coming in M11). */}
         <Stack.Screen name="coming-soon" options={{ title: t('common.comingSoon') }} />
-        <Stack.Screen name="dev/ui-kit" options={{ title: t('uiKit.title') }} />
-        <Stack.Screen name="dev/db" options={{ title: t('devDb.title') }} />
       </Stack>
       <FeedbackHost />
     </>
   );
 }
 
-// Provider stack. M04 adds the onboarding/lock gate inside DatabaseGate.
 export default function RootLayout() {
-  useEffect(() => {
-    // TODO(M04): replace with the language saved in settings / chosen during onboarding.
-    usePreferencesStore.getState().setLanguage(deviceLanguage());
-  }, []);
-
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <SafeAreaProvider>
       <ThemeProvider>
         <LanguageSync />
         <NavigationTheme>
           <DatabaseGate>
-            <RootStack />
+            <AppGate>
+              <RootStack />
+            </AppGate>
           </DatabaseGate>
         </NavigationTheme>
       </ThemeProvider>
     </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

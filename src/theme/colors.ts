@@ -8,6 +8,8 @@ export const brand = {
   warning: '#F59E0B',
   danger: '#DC2626',
   info: '#2563EB',
+  /** WhatsApp's own green, for WhatsApp buttons only. */
+  whatsapp: '#25D366',
 } as const;
 
 export type ThemeColors = {

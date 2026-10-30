@@ -3,20 +3,54 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ChoiceSheet, GroupedSection, ListRow, ScreenScroll } from '@/components';
+import type { PlanCategory } from '@/db/models';
+import { lockNow, switchUser } from '@/features/auth/lockActions';
 import { openComingSoon } from '@/features/navigation/comingSoon';
 import { MORE_MENU, type MoreItem } from '@/features/navigation/moreMenu';
-import { usePreferencesStore, type LanguageCode, type ThemePreference } from '@/store/preferencesStore';
+import { toast } from '@/store/feedbackStore';
+import type { LanguageCode, ThemePreference } from '@/store/preferencesStore';
+import { useCurrentStaff } from '@/store/sessionStore';
+import { useSettings, useSettingsStore } from '@/store/settingsStore';
+import { logger } from '@/utils/logger';
+
+const PLAN_SEGMENT_FOR: Partial<Record<MoreItem['key'], PlanCategory>> = {
+  plans: 'membership',
+  personalTraining: 'personal_training',
+  services: 'service',
+};
 
 export default function MoreScreen() {
   const { t } = useTranslation();
-  const { theme, language, setTheme, setLanguage } = usePreferencesStore();
+  const { theme, language } = useSettings();
+  const staff = useCurrentStaff();
   const [sheet, setSheet] = useState<'language' | 'theme' | null>(null);
 
+  // Saved to settings (and the audit log); the preferences store follows automatically.
+  const save = async (patch: { theme?: ThemePreference; language?: LanguageCode }) => {
+    try {
+      await useSettingsStore.getState().update(patch);
+    } catch (e) {
+      logger.error('Saving preference failed', e);
+      toast.error(t('common.somethingWentWrong'));
+    }
+  };
+
   const valueFor = (item: MoreItem) =>
-    item.key === 'language' ? t(`language.${language}`) : item.key === 'theme' ? t(`theme.${theme}`) : undefined;
+    item.key === 'language'
+      ? t(`language.${language}`)
+      : item.key === 'theme'
+        ? t(`theme.${theme}`)
+        : item.key === 'switchUser'
+          ? staff?.name
+          : undefined;
 
   const onPress = (item: MoreItem) => {
     if (item.key === 'language' || item.key === 'theme') return setSheet(item.key);
+    const planCategory = PLAN_SEGMENT_FOR[item.key];
+    if (planCategory) return router.push({ pathname: '/more/plans', params: { category: planCategory } });
+    if (item.key === 'trash') return router.push('/more/trash');
+    if (item.key === 'lockNow') return void lockNow();
+    if (item.key === 'switchUser') return void switchUser();
     // TODO(Mxx): each owning milestone (see moreMenu.ts) routes to its real screen here.
     if (item.milestone) openComingSoon(item.milestone, t(`more.items.${item.key}`));
   };
@@ -55,7 +89,7 @@ export default function MoreScreen() {
           { value: 'en', label: t('language.en') },
           { value: 'hi', label: t('language.hi') },
         ]}
-        onSelect={setLanguage}
+        onSelect={(language) => save({ language })}
       />
       <ChoiceSheet<ThemePreference>
         visible={sheet === 'theme'}
@@ -67,7 +101,7 @@ export default function MoreScreen() {
           { value: 'light', label: t('theme.light') },
           { value: 'dark', label: t('theme.dark') },
         ]}
-        onSelect={setTheme}
+        onSelect={(theme) => save({ theme })}
       />
     </>
   );

@@ -361,3 +361,67 @@ The build is split into milestones in **`docs/ROADMAP.md`**. For each milestone:
     extra indexes for trainer, referrals, open check-ins, audit lookups.
   - Member-owned rows CASCADE on permanent member delete; a subscription with payments can't
     be deleted on its own (FK), matching §10.2 "Delete (only if no payments)".
+- 2026-10-30 — M03 domain decisions (pure functions in `src/domain/`, all unit-tested):
+  - **Month/year end dates:** `addMonths − 1 day`, except when date-fns clamps a short month
+    (31 Jan + 1 month) — then the clamped day is the end (28/29 Feb), matching the §6.2 example.
+  - **Expiring soon** is measured to the end of back-to-back renewals (`coveredUntil`), so a
+    member who renewed early isn't flagged or reminded.
+  - **Upcoming / No plan** follow `checkin_block_expired` like Expired; **Frozen** always blocks;
+    used-up session plans always block (even with an override).
+  - **Freeze limits:** `max_freeze_days` / `max_freeze_times` = **0 means no limit** (all seeded
+    plans are 0). Open-ended freezes need ≥ 1 day left; fixed freezes ended early count only days used.
+  - **Inclusive GST:** total = base + admission − discount and `tax_paise` is the GST inside it
+    (exclusive: + tax on top). % discounts apply to base + admission, before tax. Odd paisa of
+    CGST/SGST goes to SGST.
+  - **Dues:** cancelled subscriptions owe nothing; unapplied advance is netted off the member due;
+    advance payments are linked whole to a new subscription while they fit (`advancesToApply`).
+  - **Manager role** also lacks `payments.delete` (§13 owner-only) and `data.erase`.
+  - **Auto check-out** time = check-in + `auto_checkout_hours` (not "now").
+  - Code widths: member codes 4 digits (GYM0001), receipts 5 (RCPT00001).
+- 2026-10-30 — M04 onboarding / lock decisions:
+  - **Routing:** root `Stack.Protected` guards — onboarding while `onboarding_complete` is false,
+    `lock` while locked, everything else after unlock; `app/index.tsx` is the redirect target.
+    `coming-soon` stays unguarded (onboarding links to it).
+  - **PIN storage:** each staff row keeps its own random salt + `SHA-256(salt + pin)` (§5.2
+    columns, so PINs travel with backups). expo-secure-store (Keychain, this-device-only) holds
+    the lock settings and the wrong-PIN lockout — the cooldown survives force-quit, and the
+    Keychain copy of the lock settings wins over the DB on hydrate.
+  - Lockout cooldown doubles from 30 s and is capped at 1 hour. Face ID unlocks as the
+    **owner** (the device's biometrics belong to them); other staff use their PIN.
+  - Forgot PIN is a sheet on the lock screen (Face ID → new PIN twice), not a separate route.
+  - Settings: typed defaults for every §5.2 key in `src/domain/settings.ts`; invalid stored
+    values fall back to defaults; writes go through `useSettingsStore.update` (validated, one
+    transaction, audit-logged). `lock_enabled` defaults to true; when off, the owner is signed
+    in automatically on start.
+  - **Photo paths are stored relative to Documents** (`photos/<kind>/<id>.jpg`) and resolved
+    with `resolvePhotoUri` — iOS changes the app container path on updates.
+  - Onboarding saves nothing until the final step; the whole setup is one transaction.
+    13 system templates × EN/HI are seeded now (wording refined in M14).
+- 2026-10-30 — M05 plans decisions:
+  - **Session plans:** `duration_unit = 'sessions'`, `session_count` = number of sessions,
+    `duration_value` = validity in days (default 90). Use `planDuration(plan)` from
+    `@/domain/plans` before `computeEndDate` — never read the columns directly.
+  - **One-time service** = category `service` with `days` × 1 (`isOneTime`), shown as "One-time".
+  - Plans list lives in the More tab (`app/(tabs)/more/plans.tsx?category=…`); add/edit is a
+    root modal `app/plans/edit.tsx`. Reorder = ↑/↓ buttons that renumber the category 0…n−1.
+  - "Active members" = distinct non-deleted members with a non-cancelled subscription to the
+    plan covering today, or frozen. Deleting a plan is a soft delete; subscriptions keep it.
+  - Pickers must use `listActivePlans` (hides inactive + deleted).
+- 2026-10-30 — M06 members decisions:
+  - **List pipeline:** `loadMemberListData` runs five bulk queries (members matching the
+    search via SQL `LIKE`, all non-cancelled subscriptions, open freezes, net paid per
+    subscription, last visit); `buildMemberSummaries` → `filterMembers` → `sortMembers` are pure
+    (`@/domain/memberList`). Status-based filters therefore run in JS, not SQL.
+  - Status chips: **Active includes Expiring soon; Expired includes In grace.**
+  - Phone search also matches digits without the country code ("98765" finds 919876543210).
+  - **Receipts per subscription:** one payment row (and receipt number) per subscription that
+    receives money in a save, plus one for an advance. M08 shows all receipts of a save together.
+  - Member codes come from `next_member_number` inside the save transaction and skip numbers
+    already used by hand; codes stay unique including Trash. Duplicate-phone check includes Trash
+    and alternate phones, and warns (doesn't block).
+  - New setting **`trash_auto_purge`** (default true) — §10.2 "setting to disable" auto-purge.
+    Purge runs on app open from `AppGate` and deletes photos after the rows.
+  - Swipe rows use `ReanimatedSwipeable` (react-native-gesture-handler, part of Expo Go); the
+    root layout is wrapped in `GestureHandlerRootView`.
+  - Until the profile exists (M07), opening a member opens its edit form.
+  - Bulk demo members for the 2,000-row check: More → Developer (dev builds only).

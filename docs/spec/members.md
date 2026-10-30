@@ -69,3 +69,8 @@
 - Pick CSV → preview first 20 rows → map columns → validate (show errors per row) →
   import valid rows in a transaction. Optional columns for plan name, start/end date,
   amount paid to create subscriptions. Skip duplicates by phone (option).
+
+**Clarifications (M06, see CLAUDE.md Decisions Log 2026-10-30)**
+- "Active" chip includes Expiring soon; "Expired" chip includes In grace.
+- One payment row / receipt number per subscription that receives money (plus one for an advance).
+- Auto-purge is controlled by the setting `trash_auto_purge` (default on).
