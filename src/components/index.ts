@@ -1,3 +1,5 @@
+export { ActionSheet } from './ActionSheet';
+export type { ActionSheetItem } from './ActionSheet';
 export { AmountInput } from './AmountInput';
 export { AppText } from './AppText';
 export type { AppTextProps, TextTone } from './AppText';

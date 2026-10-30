@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppText, Avatar, BottomSheet, EmptyState, ErrorState, ListRow, SegmentedControl, SkeletonList } from '@/components';
+import { ActionSheet, AppText, Avatar, EmptyState, ErrorState, ListRow, SegmentedControl, SkeletonList } from '@/components';
 import type { Member } from '@/db/models';
 import { useCan } from '@/features/auth/permissions';
 import { TRASH_RETENTION_DAYS, deleteMembersForever, loadTrashedMembers, restoreMember } from '@/features/members/memberActions';
@@ -30,6 +30,7 @@ export default function TrashScreen() {
   const [members, setMembers] = useState<Member[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [active, setActive] = useState<Member | null>(null);
+  const [open, setOpen] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -46,7 +47,6 @@ export default function TrashScreen() {
   }, [load, dataVersion]);
 
   const restore = async (m: Member) => {
-    setActive(null);
     try {
       await restoreMember(m);
       toast.success(t('trash.restored', { name: m.fullName }));
@@ -57,7 +57,6 @@ export default function TrashScreen() {
   };
 
   const purge = async (m: Member) => {
-    setActive(null);
     const ok = await confirm({ title: t('trash.deleteTitle', { name: m.fullName }), message: t('trash.deleteMessage'), destructive: true, typedConfirmation: 'DELETE', confirmLabel: t('trash.deleteForever') });
     if (!ok) return;
     try {
@@ -83,7 +82,14 @@ export default function TrashScreen() {
             title={item.fullName}
             subtitle={`${item.memberCode} · ${t('trash.deletedOn', { date: formatDate(item.deletedAt, date_format) })}`}
             left={<Avatar name={item.fullName} uri={resolvePhotoUri(item.photoUri)} size={40} />}
-            onPress={canRestore || canPurge ? () => setActive(item) : undefined}
+            onPress={
+              canRestore || canPurge
+                ? () => {
+                    setActive(item);
+                    setOpen(true);
+                  }
+                : undefined
+            }
             showChevron={canRestore || canPurge}
           />
         )}
@@ -101,14 +107,20 @@ export default function TrashScreen() {
         </AppText>
       </View>
       <View style={{ flex: 1, backgroundColor: colors.surface }}>{body()}</View>
-      <BottomSheet visible={active !== null} onClose={() => setActive(null)} title={active?.fullName}>
-        {active ? (
-          <View style={{ marginHorizontal: -spacing.lg }}>
-            {canRestore ? <ListRow title={t('trash.restore')} icon="arrow-undo" iconBackground={colors.success} onPress={() => void restore(active)} /> : null}
-            {canPurge ? <ListRow title={t('trash.deleteForever')} icon="trash" iconBackground={colors.danger} destructive onPress={() => void purge(active)} /> : null}
-          </View>
-        ) : null}
-      </BottomSheet>
+      {/* The typed DELETE confirm opens only after this sheet has closed (iOS can't stack modals). */}
+      <ActionSheet<'restore' | 'purge'>
+        visible={open}
+        onClose={() => setOpen(false)}
+        title={active?.fullName}
+        items={[
+          ...(canRestore ? [{ key: 'restore' as const, label: t('trash.restore'), icon: 'arrow-undo' as const, color: colors.success }] : []),
+          ...(canPurge ? [{ key: 'purge' as const, label: t('trash.deleteForever'), icon: 'trash' as const, destructive: true }] : []),
+        ]}
+        onSelect={(k) => {
+          if (!active) return;
+          void (k === 'restore' ? restore(active) : purge(active));
+        }}
+      />
     </View>
   );
 }

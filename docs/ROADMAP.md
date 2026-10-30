@@ -15,7 +15,7 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M04 | Onboarding, settings, app lock, staff session | Foundation | ✅ |
 | M05 | Plans, PT & services | Core ops | ✅ |
 | M06 | Members: list, add/edit with plan & payment, trash | Core ops | ✅ |
-| M07 | Member profile + subscription lifecycle | Core ops | ⬜ |
+| M07 | Member profile + subscription lifecycle | Core ops | ✅ |
 | M08 | Payments, dues, refunds, receipt PDF | Core ops | ⬜ |
 | M09 | Check-in: search, today's list, QR, kiosk, history | Core ops | ⬜ |
 | M10 | Dashboard | Core ops | ⬜ |
@@ -82,6 +82,13 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M06 | Long-press → multi-select → Assign trainer and Move to Trash; Trash → Restore and Delete permanently (type DELETE) | ⬜ |
 | M06 | Developer → Insert 2,000 demo members → the list scrolls smoothly and search stays instant | ⬜ |
 | M06 | Duplicate phone warning appears; Edit member saves; Home search finds members | ⬜ |
+| M06 | Success sheet "Share receipt" / "Share card" stubs push the Coming-soon screen while the sheet is open — check it isn't hidden behind the sheet (stubs are replaced in M08 / M13) | ⬜ |
+| M07 | Tap a member (list, Home search, duplicate "Open") → profile opens in the Members tab with the list underneath; header, action row and tab chips look right in light + dark | ⬜ |
+| M07 | **Done when:** Renew an active plan → new plan starts the day after the old end date; renew an expired one → starts today, "Start from expiry date" backdates | ⬜ |
+| M07 | **Done when:** Freeze open-ended a few days back → Unfreeze → end date moves by the frozen days; a fixed freeze ends by itself after its last day | ⬜ |
+| M07 | Freeze over the plan limit: without override it's blocked; with `membership.freeze_override` the second tap overrides | ⬜ |
+| M07 | Extend (reason), Change plan (credit shown + applied as discount), Edit plan, Cancel with refund, Delete (owner, no payments) all work and show in History | ⬜ |
+| M07 | Dialogs after a sheet (Unfreeze / Delete plan / Move to Trash from More, Trash → Delete permanently, Plans → Delete) appear once the sheet has closed | ⬜ |
 
 ### Cross-cutting checklist (every milestone)
 
@@ -249,23 +256,25 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
 
 ### M07 · Member profile + subscription lifecycle
 **Spec:** `members.md` (profile), `business-rules.md` §6.1, §6.3, §6.4
-- [ ] **Header:** large photo, name, code, status badge, days left, due badge, phone
-- [ ] **Action row:** Call, WhatsApp, SMS, Check-in (register → M09), Renew, Collect payment (register → M08), Card (register → M13), More
-- [ ] **Overview tab:** current membership (plan, start, end, days-left progress bar), PT plan + trainer + sessions left, services, lifetime paid, total due, last visit, visits this month, member since, referred by / referrals made, notes
-- [ ] **Plans tab:** timeline of all subscriptions with status, dates, amounts, paid and due. Actions:
-  - Renew: default start date per §6.3, "start from expiry date" option for expired plans, override
+- [x] **Header:** large photo, name, code, status badge, days left, due badge, phone
+- [x] **Action row:** Call, WhatsApp, SMS, Check-in (register → M09), Renew, Collect payment (register → M08), Card (register → M13), More
+- [x] **Overview tab:** current membership (plan, start, end, days-left progress bar), PT plan + trainer + sessions left, services, lifetime paid, total due, last visit, visits this month, member since, referred by / referrals made, notes (+ personal details with Aadhaar masked)
+- [x] **Plans tab:** timeline of all subscriptions with status, dates, amounts, paid and due. Actions:
+  - Renew: default start date per §6.3, "start from expiry date" option for expired plans, override (start date stays editable); advances auto-apply
   - Freeze (N days or open-ended) / Unfreeze, enforcing plan limits unless `membership.freeze_override` (`checkFreeze`; on unfreeze `frozenDaysOnEnd` + `applyUnfreeze`, re-checking `remainingFreezeDays` for open-ended freezes)
-  - Fixed-length freezes whose last day has passed (`isFreezeOver`) are closed automatically — on profile load and in the start-up pipeline (M11) — extending the end date by the frozen days
+  - Fixed-length freezes whose last day has passed (`isFreezeOver`) are closed automatically — on profile load and at app start (`AppGate`, folded into the M11 pipeline) — extending the end date by the frozen days
   - Extend end date (with a reason)
   - Change plan (upgrade, showing the proration suggestion)
   - Cancel (reason + refund amount)
   - Edit
   - Delete (owner only, only if the subscription has no payments)
-- [ ] Payments, Attendance, Measurements and Messages tabs scaffolded (registers → M08, M09, M17, M14)
-- [ ] **More menu:** Edit, Share card (register → M13), Generate QR (register → M13), Move to trash, audit history for this member
-- [ ] Every lifecycle action writes to the audit log
+- [x] Payments, Attendance, Measurements and Messages tabs scaffolded (registers → M08, M09, M17, M14)
+- [x] **More menu:** Edit, Share card (register → M13), Generate QR (register → M13), Move to trash, audit history for this member
+- [x] Every lifecycle action writes to the audit log
 
 **Done when:** renewing an active plan starts the day after its end date, and a freeze extends the end date by the frozen days.
+
+> Status: ✅ tsc · ✅ jest (189 tests; renewal start dates, proration, freeze → end date +frozen days, auto-closing fixed freezes, cancel with refund, delete guard, plan actions per state/permission — domain and against real SQLite) · ✅ expo-doctor 20/20 · ✅ iOS bundle exports. On-device checks → Pending device checks.
 
 ### M08 · Payments
 **Spec:** `payments.md` (§10.5), `business-rules.md` §6.5–6.7
@@ -486,12 +495,13 @@ Features built as stubs early on that must be finished later. The owning milesto
 | FAB "Mark attendance" | M01 | M09 | ⬜ |
 | Onboarding "Restore a backup" | M04 | M11 | ⬜ |
 | Onboarding "Done" schedules notifications | M04 | M15 | ⬜ |
-| Members row tap + duplicate-phone "Open" → member profile (open the edit form until then) | M06 | M07 | ⬜ |
-| Show ID numbers with `maskIdNumber` (Aadhaar last 4) wherever they appear in lists/profile | M06 | M07 | ⬜ |
+| Members row tap + duplicate-phone "Open" → member profile (open the edit form until then) | M06 | M07 | ✅ |
+| Show ID numbers with `maskIdNumber` (Aadhaar last 4) wherever they appear in lists/profile | M06 | M07 | ✅ |
 | Settings toggle for `trash_auto_purge` (default on) | M06 | M20 | ⬜ |
 | Members swipe "Check-in" | M06 | M09 | ⬜ |
-| Members swipe "Renew" | M06 | M07 | ⬜ |
-| Members swipe / profile WhatsApp with templates | M06/M07 | M14 | ⬜ |
+| Members swipe "Renew" | M06 | M07 | ✅ |
+| Members swipe / profile WhatsApp and SMS with templates (+ message log) | M06/M07 | M14 | ⬜ |
+| Renew / Add plan / Change plan: offer "Share receipt" for the payment just recorded | M07 | M08 | ⬜ |
 | Members bulk "Send message" | M06 | M14 | ⬜ |
 | Members bulk "Export selected" | M06 | M11 | ⬜ |
 | Members bulk "Change branch" + Branch filter | M06 | M19 | ⬜ |
@@ -517,7 +527,7 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Start-up pipeline: reschedule notifications | M11 | M15 | ⬜ |
 | PT trainer picker / "My PT clients" | M05/M06 | M19 | ⬜ |
 | Permission gating on all earlier screens | M04 | M19 | ⬜ |
-| `AppGate` start-up hook (`TODO(M11)`): auto check-out, trash purge, daily auto-backup | M04 | M11 | ⬜ |
+| `AppGate` start-up hook (`TODO(M11)`): auto check-out, trash purge, end finished freezes (M07), daily auto-backup | M04 | M11 | ⬜ |
 | Security settings (lock on/off, auto-lock minutes, Face ID toggle, change PIN) — must go through `settingsStore.update` so the Keychain copy stays in sync | M04 | M20 | ⬜ |
 | Staff PINs set/reset by the owner (lock screen already lists every active staff member with a PIN) | M04 | M19 | ⬜ |
 

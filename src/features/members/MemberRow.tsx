@@ -21,6 +21,16 @@ export type MemberRowProps = {
   onPress: (m: MemberSummary) => void;
   onLongPress: (m: MemberSummary) => void;
   onAction: (action: RowAction, m: MemberSummary) => void;
+  /** Swipe actions the logged-in staff member may use (hidden otherwise, §15). Keep the arrays stable. */
+  leftActions: RowAction[];
+  rightActions: RowAction[];
+};
+
+const SWIPE: Record<RowAction, { icon: IconName; color: (c: ReturnType<typeof useTheme>['colors']) => string }> = {
+  call: { icon: 'call', color: (c) => c.success },
+  whatsapp: { icon: 'logo-whatsapp', color: () => brand.whatsapp },
+  checkin: { icon: 'enter-outline', color: (c) => c.info },
+  renew: { icon: 'refresh', color: (c) => c.primary },
 };
 
 function SwipeButton({ icon, label, color, onPress }: { icon: IconName; label: string; color: string; onPress: () => void }) {
@@ -40,7 +50,7 @@ function SwipeButton({ icon, label, color, onPress }: { icon: IconName; label: s
 }
 
 /** One member (§10.2): photo/initials, name, code, phone, plan, status, days left, due. */
-function MemberRowBase({ member: m, currency, selecting, selected, onPress, onLongPress, onAction }: MemberRowProps) {
+function MemberRowBase({ member: m, currency, selecting, selected, onPress, onLongPress, onAction, leftActions, rightActions }: MemberRowProps) {
   const { t } = useTranslation();
   const { colors, spacing } = useTheme();
   const labels = useMemberLabels();
@@ -102,24 +112,23 @@ function MemberRowBase({ member: m, currency, selecting, selected, onPress, onLo
   );
 
   if (selecting) return row;
+  const buttons = (list: RowAction[]) =>
+    list.length === 0 ? null : (
+      <View style={{ flexDirection: 'row' }}>
+        {list.map((a) => (
+          <SwipeButton key={a} icon={SWIPE[a].icon} label={t(`members.actions.${a}`)} color={SWIPE[a].color(colors)} onPress={() => act(a)} />
+        ))}
+      </View>
+    );
   return (
     <ReanimatedSwipeable
       ref={swipe}
       friction={2}
       overshootLeft={false}
       overshootRight={false}
-      renderLeftActions={() => (
-        <View style={{ flexDirection: 'row' }}>
-          <SwipeButton icon="call" label={t('members.actions.call')} color={colors.success} onPress={() => act('call')} />
-          <SwipeButton icon="logo-whatsapp" label={t('members.actions.whatsapp')} color={brand.whatsapp} onPress={() => act('whatsapp')} />
-        </View>
-      )}
-      renderRightActions={() => (
-        <View style={{ flexDirection: 'row' }}>
-          <SwipeButton icon="enter-outline" label={t('members.actions.checkin')} color={colors.info} onPress={() => act('checkin')} />
-          <SwipeButton icon="refresh" label={t('members.actions.renew')} color={colors.primary} onPress={() => act('renew')} />
-        </View>
-      )}
+      enabled={leftActions.length + rightActions.length > 0}
+      renderLeftActions={leftActions.length > 0 ? () => buttons(leftActions) : undefined}
+      renderRightActions={rightActions.length > 0 ? () => buttons(rightActions) : undefined}
     >
       {row}
     </ReanimatedSwipeable>

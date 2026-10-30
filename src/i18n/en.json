@@ -632,7 +632,8 @@
       "reference": "Reference",
       "referenceHelp": "UPI reference or cheque number (optional).",
       "paidOn": "Payment date",
-      "balance": "Balance due"
+      "balance": "Balance due",
+      "advanceApplied": "Advance already paid"
     },
     "duplicate": {
       "title": "Phone number already used",
@@ -650,6 +651,197 @@
       "receipt": "Share receipt",
       "card": "Share membership card",
       "addAnother": "Add another"
+    }
+  },
+  "profile": {
+    "tab": {
+      "overview": "Overview",
+      "plans": "Plans",
+      "payments": "Payments",
+      "attendance": "Attendance",
+      "measurements": "Measurements",
+      "messages": "Messages"
+    },
+    "tabLater": "This tab will be built in milestone {{milestone}}.",
+    "action": {
+      "call": "Call",
+      "whatsapp": "WhatsApp",
+      "sms": "SMS",
+      "checkin": "Check-in",
+      "renew": "Renew",
+      "collect": "Collect",
+      "card": "Card",
+      "more": "More"
+    },
+    "cantSms": "Couldn't open Messages.",
+    "addPlan": "Add plan",
+    "dates": "{{start}} → {{end}}",
+    "until": "until {{date}}",
+    "coveredUntil": "renewed until {{date}}",
+    "sessionsLeft_one": "{{count}} session left",
+    "sessionsLeft_other": "{{count}} sessions left",
+    "sessionsUsed": "{{used}} of {{total}} sessions used",
+    "frozenDays_one": "Frozen {{count}} day in total",
+    "frozenDays_other": "Frozen {{count}} days in total",
+    "frozenSince": "Frozen since {{date}}",
+    "frozenUntil": "until {{date}}",
+    "renewal": "Renewal",
+    "cancelledNote": "Cancelled: {{reason}}",
+    "refunded": "refunded {{amount}}",
+    "paid": "Paid",
+    "due": "Due",
+    "planActions": "Actions for {{name}}",
+    "details": "Details",
+    "state": {
+      "completed": "Ended",
+      "cancelled": "Cancelled"
+    },
+    "overview": {
+      "membership": "Membership",
+      "noMembership": "No membership plan yet.",
+      "pt": "Personal training",
+      "trainer": "Trainer: {{name}}",
+      "services": "Services",
+      "summary": "Summary",
+      "lifetimePaid": "Paid in total",
+      "totalDue": "Total due",
+      "advance": "Advance (unused)",
+      "lastVisit": "Last visit",
+      "never": "Never",
+      "visitsThisMonth": "Visits this month",
+      "memberSince": "Member since",
+      "referrals": "Referrals",
+      "referredByThem": "Referred by this member"
+    },
+    "plans": {
+      "emptyTitle": "No plans yet",
+      "emptyMessage": "Add a membership, personal training or a service."
+    },
+    "planAction": {
+      "renew": "Renew",
+      "freeze": "Freeze",
+      "unfreeze": "Unfreeze",
+      "extend": "Extend end date",
+      "changePlan": "Change plan",
+      "edit": "Edit",
+      "cancel": "Cancel plan",
+      "delete": "Delete plan"
+    },
+    "freeze": {
+      "title": "Freeze {{name}}",
+      "noLimit": "This plan has no freeze limit.",
+      "limits": "Allowed: {{days}} days, {{times}} times. Used so far: {{usedDays}} days, {{usedTimes}} times.",
+      "from": "Freeze from",
+      "openEnded": "Until I unfreeze",
+      "openEndedHint": "No end date — tap Unfreeze when they are back.",
+      "days": "Number of days",
+      "reason": "Reason (optional)",
+      "submit": "Freeze",
+      "submitOverride": "Freeze anyway (override limit)",
+      "overrideHint": "This goes over the plan's freeze limit. Tap again to override — it is noted in the activity log.",
+      "done": "{{name}} frozen",
+      "violation": {
+        "max_times": "This plan has already been frozen the maximum number of times.",
+        "max_days": "Only {{count}} freeze day(s) are left on this plan.",
+        "already_frozen": "This plan is already frozen.",
+        "outside_subscription": "The freeze must start within the plan dates.",
+        "invalid_days": "Enter at least 1 day."
+      }
+    },
+    "unfreeze": {
+      "title": "Unfreeze {{name}}?",
+      "message_one": "The end date moves from {{from}} to {{to}} (+{{count}} day).",
+      "message_other": "The end date moves from {{from}} to {{to}} (+{{count}} days).",
+      "capped_one": "The plan allows only {{count}} more freeze day, so only that is added.",
+      "capped_other": "The plan allows only {{count}} more freeze days, so only those are added.",
+      "done": "Unfrozen — now ends {{date}}"
+    },
+    "extend": {
+      "title": "Extend {{name}}",
+      "current": "Currently ends {{date}}",
+      "newEnd": "New end date",
+      "laterDate": "Pick a date after the current end date.",
+      "reason": "Reason",
+      "reasonPlaceholder": "e.g. Gym closed for Diwali",
+      "submit": "Extend",
+      "done": "Extended until {{date}}"
+    },
+    "cancel": {
+      "title": "Cancel {{name}}",
+      "warning": "The plan stops now and nothing more is due on it. This is noted in the activity log.",
+      "reason": "Reason for cancelling",
+      "paidSoFar": "Paid on this plan: {{amount}}",
+      "refund": "Refund amount (optional)",
+      "refundTooLarge": "The refund can't be more than {{max}}.",
+      "refundMode": "Refund paid by",
+      "refundDate": "Refund date",
+      "submit": "Cancel plan",
+      "submitRefund": "Cancel plan and refund {{amount}}",
+      "done": "{{name}} cancelled"
+    },
+    "deletePlan": {
+      "title": "Delete {{name}}?",
+      "message": "The plan is removed from this member. This cannot be undone.",
+      "done": "{{name}} deleted",
+      "failed": "Couldn't delete the plan. Plans with payments can't be deleted — cancel them instead."
+    },
+    "editPlan": {
+      "title": "Edit plan",
+      "notFound": "This plan couldn't be found.",
+      "paidSoFar": "Already paid on this plan: {{amount}}",
+      "belowPaid": "The total can't be less than what's already paid ({{amount}}).",
+      "taxNote": "GST is recalculated with the current tax settings.",
+      "saved": "{{name}} updated"
+    },
+    "renew": {
+      "title": {
+        "renew": "Renew",
+        "add": "Add plan",
+        "change": "Change plan"
+      },
+      "save": {
+        "renew": "Renew",
+        "add": "Add plan",
+        "change": "Change plan"
+      },
+      "previous": "Renewing",
+      "plan": "Plan",
+      "noPlans": "There are no active plans in this category. Add one in More → Plans.",
+      "fromExpiry": "Start from the expiry date",
+      "fromExpiryHint": "Charge for the days since the plan ended.",
+      "saved": "{{plan}} saved — valid until {{date}}",
+      "failed": "Couldn't save the plan. Nothing was changed — please try again."
+    },
+    "change": {
+      "current": "Current plan",
+      "endsOn": "It will end on {{date}}; the new plan starts today.",
+      "unusedDays_one": "{{count}} unused day is worth {{amount}}.",
+      "unusedDays_other": "{{count}} unused days are worth {{amount}}.",
+      "unusedSessions_one": "{{count}} unused session is worth {{amount}}.",
+      "unusedSessions_other": "{{count}} unused sessions are worth {{amount}}.",
+      "applyCredit": "Use it as a discount",
+      "applyCreditHint": "Suggested credit for the unused part of the current plan.",
+      "creditReason_one": "Credit from {{plan}} ({{count}} unused day)",
+      "creditReason_other": "Credit from {{plan}} ({{count}} unused days)",
+      "blocked": {
+        "not_current": "Only a running plan can be changed.",
+        "frozen": "Unfreeze the plan before changing it.",
+        "starts_today": "This plan started today — use Edit to switch it instead.",
+        "not_started": "This plan hasn't started yet — use Edit to change it.",
+        "ended": "This plan has ended — renew it instead."
+      }
+    },
+    "more": {
+      "shareCard": "Share card",
+      "qr": "Show QR code",
+      "history": "History",
+      "trash": "Move to Trash"
+    },
+    "history": {
+      "title": "History",
+      "emptyTitle": "No history yet",
+      "emptyMessage": "Changes to this member, their plans and payments appear here.",
+      "system": "Automatic"
     }
   }
 }

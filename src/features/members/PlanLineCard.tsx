@@ -15,7 +15,8 @@ export type PlanLineCardProps = {
   error: string | null;
   trainers: Staff[];
   onChange: (line: PlanLine) => void;
-  onRemove: () => void;
+  /** Omit to hide the remove button (renew / edit a plan). */
+  onRemove?: () => void;
 };
 
 /** One plan in Add member step 2: dates, price, admission, discount, trainer, line total (§10.2). */
@@ -40,9 +41,11 @@ export function PlanLineCard({ line, draft, error, trainers, onChange, onRemove 
             {summary(line.plan)}
           </AppText>
         </View>
-        <Pressable onPress={onRemove} accessibilityRole="button" accessibilityLabel={t('members.plan.remove', { name: line.plan.name })} style={{ width: minTapSize, height: minTapSize, alignItems: 'center', justifyContent: 'center' }}>
-          <Icon name="close-circle" size={24} color={colors.textTertiary} />
-        </Pressable>
+        {onRemove ? (
+          <Pressable onPress={onRemove} accessibilityRole="button" accessibilityLabel={t('members.plan.remove', { name: line.plan.name })} style={{ width: minTapSize, height: minTapSize, alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="close-circle" size={24} color={colors.textTertiary} />
+          </Pressable>
+        ) : null}
       </View>
 
       <View style={{ gap: spacing.md, marginTop: spacing.md }}>

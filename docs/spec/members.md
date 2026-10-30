@@ -74,3 +74,9 @@
 - "Active" chip includes Expiring soon; "Expired" chip includes In grace.
 - One payment row / receipt number per subscription that receives money (plus one for an advance).
 - Auto-purge is controlled by the setting `trash_auto_purge` (default on).
+
+**Clarifications (M07, see CLAUDE.md Decisions Log 2026-10-30)**
+- The profile route is `/members/[id]` (inside the Members tab).
+- Change plan: the old plan ends yesterday; the suggested credit is the unused share of the old plan's total, pre-filled as a discount on the new plan.
+- Cancel requires a reason; the refund can't exceed what was paid on that plan and is recorded as a refund payment.
+- Overview also lists the member's personal details (Aadhaar masked to the last 4 digits).

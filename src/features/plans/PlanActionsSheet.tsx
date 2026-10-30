@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
-import { View } from 'react-native';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { BottomSheet, ListRow } from '@/components';
+import { ActionSheet } from '@/components';
 import type { PlanWithCount } from '@/db/repositories/plans';
 import { confirm, toast } from '@/store/feedbackStore';
 import { useTheme } from '@/theme';
@@ -10,13 +10,20 @@ import { logger } from '@/utils/logger';
 
 import { deletePlan, setPlanActive } from './planActions';
 
-/** Edit / Deactivate / Delete for one plan. Only shown to staff with `plans.manage`. */
+type Action = 'edit' | 'toggle' | 'delete';
+
+/**
+ * Edit / Deactivate / Delete for one plan. Only shown to staff with `plans.manage`. Actions
+ * run after the sheet has closed, so the delete confirmation can be presented (iOS).
+ */
 export function PlanActionsSheet({ plan, onClose }: { plan: PlanWithCount | null; onClose: () => void }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  // Keep the last plan on screen while the sheet animates away.
+  const [shown, setShown] = useState<PlanWithCount | null>(plan);
+  if (plan && plan !== shown) setShown(plan);
 
   const run = async (task: () => Promise<void>, success: string) => {
-    onClose();
     try {
       await task();
       toast.success(success);
@@ -25,9 +32,6 @@ export function PlanActionsSheet({ plan, onClose }: { plan: PlanWithCount | null
       toast.error(t('common.somethingWentWrong'));
     }
   };
-
-  const toggleActive = (p: PlanWithCount) =>
-    run(() => setPlanActive(p, !p.isActive), p.isActive ? t('plans.deactivated', { name: p.name }) : t('plans.activated', { name: p.name }));
 
   const remove = async (p: PlanWithCount) => {
     const ok = await confirm({
@@ -39,29 +43,29 @@ export function PlanActionsSheet({ plan, onClose }: { plan: PlanWithCount | null
     if (ok) await run(() => deletePlan(p), t('plans.deleted', { name: p.name }));
   };
 
+  const onSelect = (a: Action) => {
+    const p = shown;
+    if (!p) return;
+    if (a === 'edit') return router.push({ pathname: '/plans/edit', params: { id: p.id } });
+    if (a === 'toggle') return void run(() => setPlanActive(p, !p.isActive), p.isActive ? t('plans.deactivated', { name: p.name }) : t('plans.activated', { name: p.name }));
+    return void remove(p);
+  };
+
   return (
-    <BottomSheet visible={plan !== null} onClose={onClose} title={plan?.name}>
-      {plan ? (
-        <View>
-          <ListRow
-            title={t('common.edit')}
-            icon="create-outline"
-            iconBackground={colors.info}
-            onPress={() => {
-              onClose();
-              router.push({ pathname: '/plans/edit', params: { id: plan.id } });
-            }}
-          />
-          <ListRow
-            title={plan.isActive ? t('plans.deactivate') : t('plans.activate')}
-            subtitle={plan.isActive ? t('plans.deactivateHint') : undefined}
-            icon={plan.isActive ? 'eye-off-outline' : 'eye-outline'}
-            iconBackground={colors.warning}
-            onPress={() => toggleActive(plan)}
-          />
-          <ListRow title={t('common.delete')} icon="trash-outline" iconBackground={colors.danger} destructive onPress={() => remove(plan)} />
-        </View>
-      ) : null}
-    </BottomSheet>
+    <ActionSheet<Action>
+      visible={plan !== null}
+      onClose={onClose}
+      title={shown?.name}
+      onSelect={onSelect}
+      items={
+        shown
+          ? [
+              { key: 'edit', label: t('common.edit'), icon: 'create-outline', color: colors.info },
+              { key: 'toggle', label: shown.isActive ? t('plans.deactivate') : t('plans.activate'), subtitle: shown.isActive ? t('plans.deactivateHint') : undefined, icon: shown.isActive ? 'eye-off-outline' : 'eye-outline', color: colors.warning },
+              { key: 'delete', label: t('common.delete'), icon: 'trash-outline', destructive: true },
+            ]
+          : []
+      }
+    />
   );
 }

@@ -14,6 +14,7 @@ import { loadMember, restoreMember, saveMemberEdits } from '@/features/members/m
 import { formToMember, memberToForm, type MemberFormValues } from '@/features/members/memberSchema';
 import { useMemberForm } from '@/features/members/useMemberForm';
 import { useMemberLookups } from '@/features/members/useMemberLookups';
+import { openMember } from '@/features/members/useMemberRowActions';
 import { deletePhoto } from '@/services/photos';
 import { toast } from '@/store/feedbackStore';
 import { useSettings } from '@/store/settingsStore';
@@ -122,7 +123,8 @@ export default function EditMemberScreen() {
         }}
         onOpen={(m) => {
           clearDuplicates();
-          router.replace({ pathname: '/member/[id]/edit', params: { id: m.id } });
+          router.back();
+          openMember(m.id);
         }}
       />
     </>

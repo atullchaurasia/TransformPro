@@ -1,18 +1,19 @@
 import { formatPaise } from '@/domain/money';
 import type { PaymentPlan, SubscriptionDraft } from '@/domain/newMember';
 
-import type { Member, NewRow, Payment, PaymentMode, Subscription } from '../models';
+import type { Member, NewRow, Payment, Subscription } from '../models';
 import type { Db } from '../types';
 
 import { writeAudit } from './audit';
-import { allocateMemberCode, allocateReceiptNumber, isMemberCodeTaken } from './codes';
-import { membersRepo, paymentsRepo, subscriptionsRepo } from './index';
+import { allocateMemberCode, isMemberCodeTaken } from './codes';
+import { membersRepo, subscriptionsRepo } from './index';
+import { recordPlanPayments, type PaymentDetails } from './payments';
 
 export type NewMemberInput = {
   /** `memberCode: null` = allocate the next auto code. */
   member: Omit<NewRow<Member>, 'memberCode'> & { memberCode: string | null };
   subscriptions: Omit<SubscriptionDraft, 'price'>[];
-  payment: (Pick<Payment, 'mode' | 'reference' | 'paidOn' | 'note'> & { plan: PaymentPlan; mode: PaymentMode }) | null;
+  payment: (PaymentDetails & { plan: PaymentPlan }) | null;
   currency: string;
 };
 
@@ -60,33 +61,16 @@ export async function createMemberWithPlans(tx: Db, input: NewMemberInput): Prom
     });
   }
 
-  const payments: Payment[] = [];
-  if (input.payment) {
-    for (const a of input.payment.plan.allocations) {
-      const subscription = a.index === null ? null : subscriptions[a.index];
-      if (a.index !== null && !subscription) throw new Error('Payment allocated to an unknown subscription');
-      const payment = await paymentsRepo.create(tx, {
-        receiptNumber: await allocateReceiptNumber(tx),
-        memberId: member.id,
-        subscriptionId: subscription?.id ?? null,
-        branchId: member.branchId,
-        amountPaise: a.amountPaise,
-        mode: input.payment.mode,
-        reference: input.payment.reference,
-        paidOn: input.payment.paidOn,
-        note: input.payment.note,
+  const payments: Payment[] = input.payment
+    ? await recordPlanPayments(tx, {
+        member,
+        subscriptions,
+        plan: input.payment.plan,
+        details: input.payment,
         receivedBy: input.member.createdBy,
-        isRefund: false,
-      });
-      payments.push(payment);
-      await writeAudit(tx, {
-        action: 'payment.create',
-        entity: 'payment',
-        entityId: payment.id,
-        summary: `${payment.receiptNumber}: ${formatPaise(payment.amountPaise, input.currency)} from ${member.fullName}${subscription ? ` for ${subscription.planNameSnapshot}` : ' (advance)'}`,
-      });
-    }
-  }
+        currency: input.currency,
+      })
+    : [];
 
   return { member, subscriptions, payments };
 }

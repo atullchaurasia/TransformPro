@@ -329,8 +329,8 @@ The build is split into milestones in **`docs/ROADMAP.md`**. For each milestone:
     `UISupportedInterfaceOrientations~ipad` allows all four on iPad (§3). Verify in the M12 build.
   - Extra packages beyond §1, required by feature specs: expo-clipboard, expo-keep-awake,
     @react-native-community/datetimepicker.
-  - Git commits are on hold until the developer (Atul) sets the repo-local git identity and
-    GitHub account; the PC's global git identity belongs to someone else and must not be used.
+  - Git: the repo pushes to Atul's GitHub (`atullchaurasia/TransformPro`, branch `main`) and commits
+    use Atul's identity (atullchaurasia). Never commit or push under any other account.
 - 2026-10-30 — M01 UI foundation decisions:
   - Each tab is a folder with its own native Stack (`app/(tabs)/home|members|checkin|payments|more/`)
     so iOS large titles work (`headerLargeTitleEnabled` — `headerLargeTitle` is deprecated in
@@ -425,3 +425,32 @@ The build is split into milestones in **`docs/ROADMAP.md`**. For each milestone:
     root layout is wrapped in `GestureHandlerRootView`.
   - Until the profile exists (M07), opening a member opens its edit form.
   - Bulk demo members for the 2,000-row check: More → Developer (dev builds only).
+- 2026-10-30 — M07 profile & lifecycle decisions:
+  - **Profile route** is `/members/[id]` (inside the Members tab, `app/(tabs)/members/[id]/`), not
+    `/member/[id]`, so the tab bar and the list stay underneath (`unstable_settings.initialRouteName`).
+    Forms are root modals: `member/[id]/renew` (`mode=renew|add|change`) and `member/[id]/subscription`.
+  - **Renew** follows §6.3; the start date stays editable (owner override). Renewals don't charge the
+    admission fee again (the toggle is still there). Advances are linked first, then "paid now" is
+    split; the payment card shows "Advance already paid".
+  - **Change plan:** only a running plan (started before today, not frozen). The old plan ends
+    yesterday as `completed`; the new one starts today with `renewed_from_subscription_id` = old.
+    Suggested credit = unused share of the old **total** (days, or sessions for session plans),
+    pre-filled as a discount the user can switch off. The old plan keeps its own due, so across both
+    plans the member pays for the days used plus the new plan.
+  - **Freeze:** start date between the plan start and today (no future-dated freezes — the status
+    logic treats any open freeze as frozen now). Fixed freezes end by themselves on profile load and
+    at app start. Over-limit with `membership.freeze_override`: the first tap shows the problem, the
+    second overrides (logged). Unfreezing an open-ended freeze past the limit without override adds
+    only the remaining allowed days.
+  - **Cancel:** reason required; refund ≤ net paid on that plan, recorded as an `is_refund` payment
+    with its own receipt number; open freezes end with it. Needs `payments.refund` to refund.
+    **Edit plan** can't take the total below what's paid; GST is recalculated with current settings.
+  - Plan actions are hidden unless allowed: renew `membership.renew`; freeze/unfreeze
+    `membership.freeze`; extend + edit `membership.edit_dates`; change plan / add plan
+    `membership.create`; cancel `membership.cancel`; delete = owner only and no payment rows
+    (deleted payments still count). Member swipe actions are permission-gated the same way.
+  - **Sheets → dialogs:** iOS can't present a modal while another is on screen, so follow-up dialogs
+    open from `BottomSheet.onDismiss` (new `ActionSheet` component). The M05 plan menu and the Trash
+    menu were switched to it.
+  - Member audit history = audit rows whose `entity_id` is the member, one of their subscriptions or
+    payments (lifecycle audits use entity `subscription`). Automatic actions log `staff_id` NULL.

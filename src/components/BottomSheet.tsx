@@ -15,10 +15,15 @@ export type BottomSheetProps = {
   children: ReactNode;
   /** Optional right-side header action, e.g. a "Done" button. */
   headerRight?: ReactNode;
+  /**
+   * Called once the sheet has fully closed. iOS can't present a modal (confirm dialog,
+   * another sheet) while one is still on screen or animating away, so follow-up UI opens here.
+   */
+  onDismiss?: () => void;
 };
 
 /** Slide-up sheet for quick actions and pickers (spec §12). Tap backdrop to close. */
-export function BottomSheet({ visible, onClose, title, children, headerRight }: BottomSheetProps) {
+export function BottomSheet({ visible, onClose, title, children, headerRight, onDismiss }: BottomSheetProps) {
   const { colors, radius, spacing } = useTheme();
   const insets = useSafeAreaInsets();
   const { t } = useTranslation();
@@ -32,7 +37,7 @@ export function BottomSheet({ visible, onClose, title, children, headerRight }: 
   }, [visible, translateY]);
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} onDismiss={onDismiss} statusBarTranslucent>
       <View style={styles.root}>
         <Pressable
           style={[StyleSheet.absoluteFill, { backgroundColor: colors.backdrop }]}

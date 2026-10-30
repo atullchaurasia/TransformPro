@@ -32,15 +32,15 @@ export function useMemberRowActions() {
           // TODO(M09): check this member in (with the §6.8 rules).
           return openComingSoon('M09', t('members.actions.checkin'));
         case 'renew':
-          // TODO(M07): open the renew flow for this member.
-          return openComingSoon('M07', t('members.actions.renew'));
+          // Renews the latest membership (or adds a first plan) — see useRenewal.
+          return router.push({ pathname: '/member/[id]/renew', params: { id: m.id, mode: 'renew' } });
       }
     },
     [t, gym_name],
   );
 }
 
-/** Opening a member. TODO(M07): go to the profile (`/member/[id]`) once it exists. */
+/** Opens the member profile (§10.2). It lives in the Members tab, so the list stays underneath. */
 export function openMember(id: string) {
-  router.push({ pathname: '/member/[id]/edit', params: { id } });
+  router.push({ pathname: '/members/[id]', params: { id } });
 }

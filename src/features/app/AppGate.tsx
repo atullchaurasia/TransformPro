@@ -5,6 +5,7 @@ import { ErrorState } from '@/components';
 import { loadOwner, signIn } from '@/features/auth/session';
 import { useAutoLock } from '@/features/auth/useAutoLock';
 import { purgeOldTrash } from '@/features/members/memberActions';
+import { closeFinishedFreezesSafely } from '@/features/profile/profileActions';
 import { deviceLanguage } from '@/i18n';
 import { usePreferencesStore } from '@/store/preferencesStore';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -32,8 +33,10 @@ export function AppGate({ children }: { children: ReactNode }) {
         return;
       }
       // TODO(M11): full start-up pipeline (auto check-out, daily auto-backup, notifications),
-      // each step isolated. Trash auto-purge (M06) already runs here and never throws.
+      // each step isolated. Already here and never throwing: trash auto-purge (M06) and
+      // ending fixed freezes whose last day has passed (M07, §6.4).
       void purgeOldTrash();
+      void closeFinishedFreezesSafely();
       if (!settings.lock_enabled) {
         const owner = await loadOwner();
         if (owner) await signIn(owner, 'no_lock');

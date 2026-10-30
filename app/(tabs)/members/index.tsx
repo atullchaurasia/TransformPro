@@ -11,7 +11,7 @@ import { useCan } from '@/features/auth/permissions';
 import { BulkBar, type BulkAction } from '@/features/members/BulkBar';
 import { FilterBar } from '@/features/members/FilterBar';
 import { FiltersSheet } from '@/features/members/FiltersSheet';
-import { MemberRow } from '@/features/members/MemberRow';
+import { MemberRow, type RowAction } from '@/features/members/MemberRow';
 import { TrainerSheet } from '@/features/members/StaffPickerSheet';
 import { assignTrainer, moveMembersToTrash } from '@/features/members/memberActions';
 import { useMemberLookups } from '@/features/members/useMemberLookups';
@@ -39,6 +39,12 @@ export default function MembersScreen() {
   const [sheet, setSheet] = useState<'filters' | 'sort' | 'trainer' | null>(null);
   const [selected, setSelected] = useState<Set<string> | null>(null);
   const can = { create: useCan('members.create'), edit: useCan('members.edit'), del: useCan('members.delete'), export: useCan('members.export') };
+  const canMessage = useCan('messages.send');
+  const canCheckin = useCan('attendance.mark');
+  const canRenew = useCan('membership.renew');
+  // Swipe actions are hidden when not permitted (§15); stable arrays keep the memoised rows cheap.
+  const leftActions = useMemo<RowAction[]>(() => (canMessage ? ['call', 'whatsapp'] : ['call']), [canMessage]);
+  const rightActions = useMemo<RowAction[]>(() => [...(canCheckin ? (['checkin'] as const) : []), ...(canRenew ? (['renew'] as const) : [])], [canCheckin, canRenew]);
 
   // Trainers without `members.view_all` see only their own members (§10.13).
   const members = useMemo(() => {
@@ -122,6 +128,8 @@ export default function MembersScreen() {
             onPress={(m) => (selecting ? toggle(m.id) : openMember(m.id))}
             onLongPress={(m) => (selecting ? toggle(m.id) : setSelected(new Set([m.id])))}
             onAction={onAction}
+            leftActions={leftActions}
+            rightActions={rightActions}
           />
         )}
       />
