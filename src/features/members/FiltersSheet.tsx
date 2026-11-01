@@ -38,7 +38,7 @@ export function FiltersSheet({ visible, onClose, value, onApply, plans, trainers
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={t('members.filters.title')}>
-      <ScrollView contentContainerStyle={{ gap: spacing.md, paddingBottom: spacing.lg }} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={{ gap: spacing.md, paddingBottom: spacing.lg, paddingHorizontal: spacing.lg }} keyboardShouldPersistTaps="handled">
         <View style={{ marginHorizontal: -spacing.lg }}>
           {toggle('hasDues', t('members.filters.hasDues'))}
           {toggle('birthdayThisMonth', t('members.filters.birthday'))}

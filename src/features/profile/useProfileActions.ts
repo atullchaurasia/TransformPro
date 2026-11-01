@@ -85,8 +85,7 @@ export function useProfileActions(profile: LoadedProfile | null) {
       case 'renew':
         return openRenew(profile);
       case 'collect':
-        // TODO(M08): record a payment for this member.
-        return openComingSoon('M08', t('profile.action.collect'));
+        return router.push({ pathname: '/payment/new', params: { memberId: member.id } });
       case 'card':
         // TODO(M13): digital membership card.
         return openComingSoon('M13', t('profile.action.card'));

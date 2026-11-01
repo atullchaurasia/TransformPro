@@ -5,6 +5,7 @@ import { ErrorState } from '@/components';
 import { loadOwner, signIn } from '@/features/auth/session';
 import { useAutoLock } from '@/features/auth/useAutoLock';
 import { purgeOldTrash } from '@/features/members/memberActions';
+import { purgeOldPaymentTrash } from '@/features/payments/paymentActions';
 import { closeFinishedFreezesSafely } from '@/features/profile/profileActions';
 import { deviceLanguage } from '@/i18n';
 import { usePreferencesStore } from '@/store/preferencesStore';
@@ -36,6 +37,7 @@ export function AppGate({ children }: { children: ReactNode }) {
       // each step isolated. Already here and never throwing: trash auto-purge (M06) and
       // ending fixed freezes whose last day has passed (M07, §6.4).
       void purgeOldTrash();
+      void purgeOldPaymentTrash();
       void closeFinishedFreezesSafely();
       if (!settings.lock_enabled) {
         const owner = await loadOwner();

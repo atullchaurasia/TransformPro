@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ActionSheet, AppText, Button, Card, Chip, ErrorState, PlaceholderNote, ScreenScroll, SkeletonList } from '@/components';
 import { openMember } from '@/features/members/useMemberRowActions';
 import { restoreMember } from '@/features/members/memberActions';
+import { MemberPaymentsTab } from '@/features/payments/MemberPaymentsTab';
 import { OverviewTab } from '@/features/profile/OverviewTab';
 import { PlansTab } from '@/features/profile/PlansTab';
 import { ProfileActionRow, ProfileHeader } from '@/features/profile/ProfileHeader';
@@ -18,7 +19,7 @@ import { useTheme } from '@/theme';
 type Tab = 'overview' | 'plans' | 'payments' | 'attendance' | 'measurements' | 'messages';
 const TABS: Tab[] = ['overview', 'plans', 'payments', 'attendance', 'measurements', 'messages'];
 /** Tabs owned by later milestones (roadmap Wire-up register). */
-const LATER: Partial<Record<Tab, string>> = { payments: 'M08', attendance: 'M09', measurements: 'M17', messages: 'M14' };
+const LATER: Partial<Record<Tab, string>> = { attendance: 'M09', measurements: 'M17', messages: 'M14' };
 
 /** Member profile (spec §10.2): header, actions, Overview / Plans / … tabs. */
 export default function MemberProfileScreen() {
@@ -40,7 +41,7 @@ export default function MemberProfileScreen() {
 
   const { member } = loaded;
   const mayRenew = !member.deletedAt && (loaded.subscriptions.length > 0 ? canRenew : canCreate);
-  // TODO(M08/M09/M14/M17): Payments, Attendance, Messages and Measurements tabs.
+  // TODO(M09/M14/M17): Attendance, Messages and Measurements tabs.
   const later = LATER[tab];
 
   return (
@@ -78,6 +79,8 @@ export default function MemberProfileScreen() {
             <OverviewTab profile={loaded} onRenew={mayRenew ? () => openRenew(loaded) : undefined} onOpenMember={openMember} />
           ) : tab === 'plans' ? (
             <PlansTab profile={loaded} />
+          ) : tab === 'payments' ? (
+            <MemberPaymentsTab memberId={member.id} readOnly={!!member.deletedAt} />
           ) : later ? (
             <PlaceholderNote text={t('profile.tabLater', { milestone: later })} />
           ) : null}

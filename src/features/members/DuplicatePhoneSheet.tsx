@@ -20,7 +20,7 @@ export function DuplicatePhoneSheet({ matches, onOpen, onContinue, onClose }: Du
   const { spacing } = useTheme();
   return (
     <BottomSheet visible={matches.length > 0} onClose={onClose} title={t('members.duplicate.title')}>
-      <View style={{ gap: spacing.md, paddingBottom: spacing.md }}>
+      <View style={{ gap: spacing.md, paddingBottom: spacing.md, paddingHorizontal: spacing.lg }}>
         <AppText tone="secondary">{t('members.duplicate.message', { count: matches.length })}</AppText>
         <View style={{ marginHorizontal: -spacing.lg }}>
           {matches.map((m) => (

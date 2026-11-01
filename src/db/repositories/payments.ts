@@ -106,6 +106,66 @@ export async function applyAdvances(tx: Db, member: Pick<Member, 'id' | 'fullNam
   return applied;
 }
 
+/**
+ * Record payment (§10.5): one row + receipt per part of the split (oldest-first or manual,
+ * already validated by `allocatePayment` / `validateManualAllocation`); null = advance.
+ */
+export async function recordPayment(
+  tx: Db,
+  input: {
+    member: PaymentMember;
+    allocations: { subscriptionId: string | null; amountPaise: number }[];
+    subscriptions: Pick<Subscription, 'id' | 'planNameSnapshot'>[];
+    details: PaymentDetails;
+    receivedBy: string | null;
+    currency: string;
+  },
+): Promise<Payment[]> {
+  const subs = new Map(input.subscriptions.map((s) => [s.id, s]));
+  const out: Payment[] = [];
+  for (const a of input.allocations) {
+    const subscription = a.subscriptionId ? subs.get(a.subscriptionId) : null;
+    if (a.subscriptionId && !subscription) throw new Error('Payment allocated to an unknown subscription');
+    out.push(await insertPayment(tx, { member: input.member, subscription: subscription ?? null, amountPaise: a.amountPaise, details: input.details, receivedBy: input.receivedBy, isRefund: false, currency: input.currency }));
+  }
+  return out;
+}
+
+/** Refund (§10.5): an `is_refund` row with its own receipt number, against a plan or the advance. */
+export function recordRefund(
+  tx: Db,
+  input: { member: PaymentMember; subscription: Pick<Subscription, 'id' | 'planNameSnapshot'> | null; amountPaise: number; details: PaymentDetails; receivedBy: string | null; currency: string },
+): Promise<Payment> {
+  return insertPayment(tx, { ...input, isRefund: true });
+}
+
+/** Delete = move to Trash (§13: owner only, never a hard delete from normal UI, audit-logged). */
+export async function softDeletePayment(tx: Db, payment: Pick<Payment, 'id' | 'receiptNumber' | 'amountPaise' | 'isRefund'>, memberName: string, currency: string): Promise<void> {
+  await paymentsRepo.softDelete(tx, payment.id);
+  await writeAudit(tx, {
+    action: 'payment.delete',
+    entity: 'payment',
+    entityId: payment.id,
+    summary: `${payment.receiptNumber}: deleted ${payment.isRefund ? 'refund' : 'payment'} of ${formatPaise(payment.amountPaise, currency)} (${memberName})`,
+  });
+}
+
+export async function restorePayment(tx: Db, payment: Pick<Payment, 'id' | 'receiptNumber'>, memberName: string): Promise<void> {
+  await paymentsRepo.restore(tx, payment.id);
+  await writeAudit(tx, { action: 'payment.restore', entity: 'payment', entityId: payment.id, summary: `${payment.receiptNumber}: restored from Trash (${memberName})` });
+}
+
+/** Trash → Delete permanently / auto-purge. The receipt number is still never reused (counter). */
+export async function deletePaymentPermanently(tx: Db, payment: Pick<Payment, 'id' | 'receiptNumber'>, memberName: string, reason: 'manual' | 'auto_purge'): Promise<void> {
+  await paymentsRepo.hardDelete(tx, payment.id);
+  await writeAudit(tx, {
+    action: 'payment.delete_permanent',
+    entity: 'payment',
+    entityId: payment.id,
+    summary: `${payment.receiptNumber}: ${reason === 'auto_purge' ? 'auto-purged' : 'permanently deleted'} (${memberName})`,
+  });
+}
+
 /** Payment rows linked to a subscription, deleted ones included (they still hold the FK). */
 export async function countSubscriptionPayments(db: Db, subscriptionId: string): Promise<number> {
   const row = await db.getFirstAsync<{ n: number }>('SELECT COUNT(*) AS n FROM payments WHERE subscription_id = ?', [subscriptionId]);

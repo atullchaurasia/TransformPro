@@ -41,7 +41,7 @@ export function MemberPickerSheet({ visible, onClose, onPick, title, excludeId }
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={title}>
-      <View style={{ gap: spacing.md, minHeight: 360 }}>
+      <View style={{ gap: spacing.md, minHeight: 360, paddingHorizontal: spacing.lg }}>
         <Input value={q} onChangeText={setQ} placeholder={t('members.searchPlaceholder')} clearable autoFocus autoCorrect={false} />
         <FlatList
           data={results}

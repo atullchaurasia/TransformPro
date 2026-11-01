@@ -16,7 +16,7 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M05 | Plans, PT & services | Core ops | ✅ |
 | M06 | Members: list, add/edit with plan & payment, trash | Core ops | ✅ |
 | M07 | Member profile + subscription lifecycle | Core ops | ✅ |
-| M08 | Payments, dues, refunds, receipt PDF | Core ops | ⬜ |
+| M08 | Payments, dues, refunds, receipt PDF | Core ops | ✅ |
 | M09 | Check-in: search, today's list, QR, kiosk, history | Core ops | ⬜ |
 | M10 | Dashboard | Core ops | ⬜ |
 | M11 | Backup, restore, export, CSV import | Data safety | ⬜ |
@@ -82,13 +82,18 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M06 | Long-press → multi-select → Assign trainer and Move to Trash; Trash → Restore and Delete permanently (type DELETE) | ⬜ |
 | M06 | Developer → Insert 2,000 demo members → the list scrolls smoothly and search stays instant | ⬜ |
 | M06 | Duplicate phone warning appears; Edit member saves; Home search finds members | ⬜ |
-| M06 | Success sheet "Share receipt" / "Share card" stubs push the Coming-soon screen while the sheet is open — check it isn't hidden behind the sheet (stubs are replaced in M08 / M13) | ⬜ |
+| M06 | Add member success screen (now on-screen, not a sheet): Share receipt, Send welcome, Share card stub, Add another, Done → opens the new profile | ⬜ |
 | M07 | Tap a member (list, Home search, duplicate "Open") → profile opens in the Members tab with the list underneath; header, action row and tab chips look right in light + dark | ⬜ |
 | M07 | **Done when:** Renew an active plan → new plan starts the day after the old end date; renew an expired one → starts today, "Start from expiry date" backdates | ⬜ |
 | M07 | **Done when:** Freeze open-ended a few days back → Unfreeze → end date moves by the frozen days; a fixed freeze ends by itself after its last day | ⬜ |
 | M07 | Freeze over the plan limit: without override it's blocked; with `membership.freeze_override` the second tap overrides | ⬜ |
 | M07 | Extend (reason), Change plan (credit shown + applied as discount), Edit plan, Cancel with refund, Delete (owner, no payments) all work and show in History | ⬜ |
 | M07 | Dialogs after a sheet (Unfreeze / Delete plan / Move to Trash from More, Trash → Delete permanently, Plans → Delete) appear once the sheet has closed | ⬜ |
+| M08 | **Done when:** record two partial payments and a refund → Dues and the profile show the right balance | ⬜ |
+| M08 | **Done when:** receipt PDF (A5 and A4) opens the share sheet and sends to WhatsApp; logo, GSTIN with CGST/SGST, terms and "Thank you" appear; Print opens AirPrint | ⬜ |
+| M08 | Collections: each date chip + Custom range, totals by mode (•••• for staff without `reports.financial`); Dues: sort, Collect / WhatsApp / Call; Refunds list + Record refund | ⬜ |
+| M08 | Delete a payment (owner) → it leaves the totals and shows in Trash → Payments; restore and delete permanently work | ⬜ |
+| M08 | Sheets no longer touch the screen edges (filters, duplicate phone, member picker, add plan, forgot PIN); photo picker and Home "+" actions open after their sheet closes | ⬜ |
 
 ### Cross-cutting checklist (every milestone)
 
@@ -278,18 +283,20 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
 
 ### M08 · Payments
 **Spec:** `payments.md` (§10.5), `business-rules.md` §6.5–6.7
-- [ ] **Record payment:** pick member → open subscriptions with dues → amount → mode (cash, UPI, card, bank transfer, cheque, other) → reference → date (default today) → note → save → receipt; oldest-first split; overpayment blocked unless saved as an advance
-- [ ] Receipt numbers incremented atomically and never reused after deletion
-- [ ] **Receipt/invoice PDF** (`services/pdf.ts`, expo-print), A4 and A5: logo, gym name, address, phone, GSTIN; receipt number, date, staff; member name, code, phone; plan, period, base price, admission fee, discount, tax (CGST/SGST), total; paid now, mode, reference, balance due; terms from settings; "Thank you" footer. Shared via the share sheet (WhatsApp, Mail, Files, AirPrint)
-- [ ] **Payments tab, Collections:** filters Today, Yesterday, This week, This month, Last month, Custom; totals by mode; rows with member, amount, mode, receipt number and staff
-- [ ] **Dues:** every member with a balance, sorted by amount or oldest, total due at the top; row actions Collect, WhatsApp reminder (templated in M14), Call
-- [ ] **Refunds:** list; record a refund (`is_refund`), audit-logged
-- [ ] Delete payment (owner only, soft delete, audit-logged); add a **Payments tab to Trash**
-- [ ] Profile **Payments tab**: list → receipt preview (share PDF / WhatsApp), record, refund, delete
-- [ ] Wire up registers: success-sheet "Share receipt", profile "Collect payment"
-- [ ] Amounts masked without `reports.financial`
+- [x] **Record payment:** pick member → open subscriptions with dues → amount → mode (cash, UPI, card, bank transfer, cheque, other) → reference → date (default today) → note → save → receipt; oldest-first split (or split by plan by hand); overpayment blocked unless saved as an advance
+- [x] Receipt numbers incremented atomically and never reused after deletion
+- [x] **Receipt/invoice PDF** (`services/pdf.ts`, expo-print), A4 and A5: logo, gym name, address, phone, GSTIN; receipt number, date, staff; member name, code, phone; plan, period, base price, admission fee, discount, tax (CGST/SGST), total; paid now, mode, reference, balance due; terms from settings; "Thank you" footer. Shared via the share sheet (WhatsApp, Mail, Files, AirPrint)
+- [x] **Payments tab, Collections:** filters Today, Yesterday, This week, This month, Last month, Custom; totals by mode; rows with member, amount, mode, receipt number and staff
+- [x] **Dues:** every member with a balance, sorted by amount or oldest, total due at the top; row actions Collect, WhatsApp reminder (templated in M14), Call
+- [x] **Refunds:** list; record a refund (`is_refund`), audit-logged
+- [x] Delete payment (owner only, soft delete, audit-logged); add a **Payments tab to Trash** (restore, delete permanently, 30-day auto-purge)
+- [x] Profile **Payments tab**: list → receipt preview (share PDF / WhatsApp), record, refund, delete
+- [x] Wire up registers: success-sheet "Share receipt", profile "Collect payment"
+- [x] Amounts masked without `reports.financial`
 
 **Done when:** partial payments plus a refund give the correct dues, and the receipt PDF shares to WhatsApp.
+
+> Status: ✅ tsc · ✅ jest (195 tests; partial payments + refund → dues, receipt numbers never reused, Trash restore/purge, date presets, totals by mode, dues list, receipt model incl. CGST/SGST and balance after each payment, HTML escaping) · ✅ expo-doctor 20/20 (expo, expo-router, expo-sqlite bumped to the latest SDK 58 patches) · ✅ iOS bundle exports. PDF sharing → Pending device checks.
 
 ### M09 · Check-in
 **Spec:** `checkin.md` (§10.4), `business-rules.md` §6.8
@@ -491,7 +498,7 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Home header "Lock" button | M01 | M04 | ✅ |
 | Home / Members header "Search" button (global search) | M01 | M06 | ✅ |
 | FAB "Add member" | M01 | M06 | ✅ |
-| FAB "Record payment" | M01 | M08 | ⬜ |
+| FAB "Record payment" | M01 | M08 | ✅ |
 | FAB "Mark attendance" | M01 | M09 | ⬜ |
 | Onboarding "Restore a backup" | M04 | M11 | ⬜ |
 | Onboarding "Done" schedules notifications | M04 | M15 | ⬜ |
@@ -501,18 +508,19 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Members swipe "Check-in" | M06 | M09 | ⬜ |
 | Members swipe "Renew" | M06 | M07 | ✅ |
 | Members swipe / profile WhatsApp and SMS with templates (+ message log) | M06/M07 | M14 | ⬜ |
-| Renew / Add plan / Change plan: offer "Share receipt" for the payment just recorded | M07 | M08 | ⬜ |
+| Renew / Add plan / Change plan: offer "Share receipt" for the payment just recorded | M07 | M08 | ✅ |
+| Receipt "WhatsApp" summary uses the `payment_receipt` template | M08 | M14 | ⬜ |
 | Members bulk "Send message" | M06 | M14 | ⬜ |
 | Members bulk "Export selected" | M06 | M11 | ⬜ |
 | Members bulk "Change branch" + Branch filter | M06 | M19 | ⬜ |
 | Success sheet "Send welcome" (templated) | M06 | M14 | ⬜ |
-| Success sheet "Share receipt" | M06 | M08 | ⬜ |
+| Success sheet "Share receipt" | M06 | M08 | ✅ |
 | Success sheet "Share card" | M06 | M13 | ⬜ |
-| Trash tab: payments | M06 | M08 | ⬜ |
+| Trash tab: payments | M06 | M08 | ✅ |
 | Trash tab: enquiries | M06 | M16 | ⬜ |
 | Trash tab: expenses | M06 | M17 | ⬜ |
 | Global search: enquiries | M06 | M16 | ⬜ |
-| Profile "Collect payment" + Payments tab | M07 | M08 | ⬜ |
+| Profile "Collect payment" + Payments tab | M07 | M08 | ✅ |
 | Profile "Check-in" + Attendance tab | M07 | M09 | ⬜ |
 | Profile Card / Share card / Generate QR | M07 | M13 | ⬜ |
 | Profile Messages tab | M07 | M14 | ⬜ |
@@ -527,7 +535,7 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Start-up pipeline: reschedule notifications | M11 | M15 | ⬜ |
 | PT trainer picker / "My PT clients" | M05/M06 | M19 | ⬜ |
 | Permission gating on all earlier screens | M04 | M19 | ⬜ |
-| `AppGate` start-up hook (`TODO(M11)`): auto check-out, trash purge, end finished freezes (M07), daily auto-backup | M04 | M11 | ⬜ |
+| `AppGate` start-up hook (`TODO(M11)`): auto check-out, trash purge (members + payments), end finished freezes (M07), daily auto-backup | M04 | M11 | ⬜ |
 | Security settings (lock on/off, auto-lock minutes, Face ID toggle, change PIN) — must go through `settingsStore.update` so the Keychain copy stays in sync | M04 | M20 | ⬜ |
 | Staff PINs set/reset by the owner (lock screen already lists every active staff member with a PIN) | M04 | M19 | ⬜ |
 

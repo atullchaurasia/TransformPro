@@ -124,7 +124,7 @@ export function OwnerStep() {
       </Card>
 
       <BottomSheet visible={pinSheet} onClose={() => setPinSheet(false)} title={t('onboarding.owner.pin')}>
-        <View style={{ paddingVertical: spacing.lg }}>
+        <View style={{ paddingVertical: spacing.lg, paddingHorizontal: spacing.lg }}>
           <PinSetup
             onCancel={() => setPinSheet(false)}
             onComplete={(pin) => {

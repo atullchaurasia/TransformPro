@@ -11,6 +11,7 @@ import { useCan } from '@/features/auth/permissions';
 import { PaymentCard } from '@/features/members/PaymentCard';
 import { PlanLineCard } from '@/features/members/PlanLineCard';
 import { useMemberLabels } from '@/features/members/useMemberLabels';
+import { ReceiptActions } from '@/features/payments/ReceiptActions';
 import { saveChangePlan, saveNewSubscription } from '@/features/profile/profileActions';
 import { useRenewal, type RenewMode } from '@/features/profile/useRenewal';
 import { toast } from '@/store/feedbackStore';
@@ -32,12 +33,27 @@ export default function RenewScreen() {
   const canCreate = useCan('membership.create');
   const allowed = mode === 'renew' ? canRenew : canCreate;
   const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState<{ paymentIds: string[]; message: string } | null>(null);
   const { pp } = r;
   const money = (p: number) => formatPaise(p, currency_code);
 
   const title = t(`profile.renew.title.${mode}`);
   const header = <Stack.Screen options={{ title, headerLeft: () => <Button label={t('common.cancel')} variant="ghost" size="sm" onPress={() => router.back()} /> }} />;
   if (!allowed) return <>{header}<ErrorState message={t('auth.noPermission')} /></>;
+  if (done) {
+    return (
+      <>
+        <Stack.Screen options={{ title, headerLeft: () => null }} />
+        <FormScreen>
+          <AppText variant="headline" align="center">
+            {done.message}
+          </AppText>
+          <ReceiptActions paymentIds={done.paymentIds} />
+          <Button label={t('common.done')} variant="ghost" onPress={() => router.back()} fullWidth />
+        </FormScreen>
+      </>
+    );
+  }
   if (r.profile === 'missing' || (mode !== 'add' && r.loaded && !r.previous)) return <>{header}<ErrorState message={t('members.notFound')} /></>;
   if (!r.loaded) return <>{header}<FormScreen><SkeletonList rows={5} /></FormScreen></>;
   if (r.change && !r.change.ok) return <>{header}<ErrorState message={t(`profile.change.blocked.${r.change.reason}`)} /></>;
@@ -54,14 +70,15 @@ export default function RenewScreen() {
     const payment = plan && plan.paidPaise > 0 ? { plan, mode: pp.payment.mode, reference: pp.payment.reference.trim() || null, paidOn: pp.payment.paidOn, note: null } : null;
     setSaving(true);
     try {
-      if (mode === 'change' && r.previous && r.change?.ok) {
-        await saveChangePlan(r.previous, r.change.oldEndDate, { member, draft: sub, payment });
-      } else {
-        await saveNewSubscription({ member, draft: sub, payment, renewedFromSubscriptionId: mode === 'renew' ? (r.previous?.id ?? null) : null, kind: mode === 'renew' ? 'renew' : 'create' });
-      }
-      // TODO(M08): offer "Share receipt" for the payment(s) just recorded.
-      toast.success(t('profile.renew.saved', { plan: sub.planNameSnapshot, date: labels.date(sub.endDate) }));
-      router.back();
+      const result =
+        mode === 'change' && r.previous && r.change?.ok
+          ? await saveChangePlan(r.previous, r.change.oldEndDate, { member, draft: sub, payment })
+          : await saveNewSubscription({ member, draft: sub, payment, renewedFromSubscriptionId: mode === 'renew' ? (r.previous?.id ?? null) : null, kind: mode === 'renew' ? 'renew' : 'create' });
+      const message = t('profile.renew.saved', { plan: sub.planNameSnapshot, date: labels.date(sub.endDate) });
+      toast.success(message);
+      // With a payment, stay to offer the receipt (§10.5); otherwise we're done.
+      if (result.payments.length > 0) setDone({ paymentIds: result.payments.map((p) => p.id), message });
+      else router.back();
     } catch (e) {
       logger.error('Saving plan failed', e);
       toast.error(t('profile.renew.failed'));

@@ -454,3 +454,26 @@ The build is split into milestones in **`docs/ROADMAP.md`**. For each milestone:
     menu were switched to it.
   - Member audit history = audit rows whose `entity_id` is the member, one of their subscriptions or
     payments (lifecycle audits use entity `subscription`). Automatic actions log `staff_id` NULL.
+- 2026-11-01 — M08 payments decisions:
+  - **Record payment** = `/payment/new?memberId=` (root modal); **refund** = `/payment/refund`. Split is
+    oldest-first (`allocatePayment`) or by plan by hand (`validateManualAllocation`); with nothing due,
+    the whole amount is an advance. Refunds go against a plan (≤ net paid on it) or the unused advance,
+    with a required reason; each refund gets its own receipt number.
+  - **Receipt model** (`@/domain/receipt`) is pure; the HTML template (`services/receiptTemplate.ts`) is
+    pure and HTML-escapes every value; `services/pdf.ts` does expo-print/expo-sharing. One document can
+    list several payments saved together. "Balance due" is what was due right after that payment, so a
+    receipt re-shared later still reads as it did. CGST/SGST lines only with a GSTIN set. The logo is
+    inlined as a data: URI (WKWebView can't load local files). PDFs are written to the cache folder as
+    `<receipt numbers>-<A4|A5>.pdf`. WhatsApp can't take a file through a link, so the WhatsApp button
+    sends a text summary; the PDF goes through the share sheet (which includes WhatsApp).
+  - **After saving** (add member, record payment, renew, refund) the receipt buttons are shown on the
+    screen, not in a sheet, so the iOS share sheet never has to open over another modal. The Add member
+    success sheet became `SuccessPanel`; its Done opens the new profile.
+  - **Masking:** without `reports.financial`, the Collections/Refunds totals show "••••"; individual
+    rows and dues stay visible (the desk needs them to collect and check receipts).
+  - **Delete payment** = soft delete (`payments.delete`, owner by default), audit-logged. Trash →
+    Payments restores or deletes permanently (typed DELETE); payments in Trash > 30 days are purged on
+    app open when `trash_auto_purge` is on. Receipt numbers come from the counter, so they're never reused.
+  - `BottomSheet` doesn't pad its content: sheet bodies add `paddingHorizontal: spacing.lg` themselves and
+    full-width rows use `marginHorizontal: -spacing.lg` inside that (fixed in several M04/M06 sheets).
+    The photo picker and Home "+" menu now use `ActionSheet` (they open after the sheet closes).

@@ -413,6 +413,81 @@
       "bank_transfer": "बैंक ट्रांसफ़र",
       "cheque": "चेक",
       "other": "अन्य"
+    },
+    "segment": {
+      "collections": "वसूली",
+      "dues": "बकाया",
+      "refunds": "वापसी"
+    },
+    "range": {
+      "today": "आज",
+      "yesterday": "कल",
+      "thisWeek": "इस हफ़्ते",
+      "thisMonth": "इस महीने",
+      "lastMonth": "पिछले महीने",
+      "custom": "चुनें",
+      "from": "से",
+      "to": "तक"
+    },
+    "totals": {
+      "collected": "वसूल हुआ",
+      "refunded": "वापस किया",
+      "count_one": "{{count}} भुगतान",
+      "count_other": "{{count}} भुगतान"
+    },
+    "emptyCollections": "इस अवधि में कोई भुगतान नहीं",
+    "emptyRefunds": "इस अवधि में कोई वापसी नहीं",
+    "emptyHint": "ऊपर कोई और तारीख चुनें।",
+    "memberEmptyTitle": "अभी कोई भुगतान नहीं",
+    "memberEmptyMessage": "इस सदस्य के भुगतान और वापसी यहाँ दिखेंगे।",
+    "record": {
+      "pickMember": "सदस्य चुनें",
+      "change": "बदलें",
+      "openPlans": "प्लान पर बकाया",
+      "due": "बकाया {{amount}}",
+      "nothingDue": "कुछ बकाया नहीं है। अभी जमा की गई राशि अगले प्लान के लिए अग्रिम रहेगी।",
+      "payOnPlan": "इस प्लान पर जमा",
+      "splitManually": "प्लान के हिसाब से खुद बाँटें",
+      "splitHint": "नहीं तो सबसे पुराना प्लान पहले भरा जाएगा।",
+      "advancePart": "{{amount}} अग्रिम के रूप में रखा गया",
+      "amount": "जमा राशि",
+      "advanceAmount": "अग्रिम राशि",
+      "manualTotal": "कुल: {{amount}}",
+      "note": "नोट (वैकल्पिक)",
+      "save": "{{amount}} का भुगतान सेव करें",
+      "saved": "{{amount}} का भुगतान दर्ज हुआ",
+      "failed": "भुगतान सेव नहीं हुआ। कुछ नहीं बदला — फिर से कोशिश करें।",
+      "fixAmount": "पहले राशि जाँचें।",
+      "doneTitle": "भुगतान दर्ज हुआ",
+      "error": {
+        "invalid_amount": "कम से कम एक प्लान के लिए राशि डालें।",
+        "over_due": "कोई राशि उस प्लान के बकाया से ज़्यादा है।"
+      }
+    },
+    "refund": {
+      "title": "वापसी दर्ज करें",
+      "short": "वापसी",
+      "against": "किसकी वापसी",
+      "upTo": "{{amount}} तक",
+      "amount": "वापसी राशि",
+      "reason": "कारण",
+      "submit": "वापसी दर्ज करें",
+      "saved": "वापसी दर्ज हुई",
+      "done": "{{amount}} की वापसी दर्ज हुई",
+      "nothing": "इस सदस्य का ऐसा कोई भुगतान नहीं है जिसकी वापसी हो सके।",
+      "pickTarget": "चुनें कि वापसी किसके लिए है।",
+      "tooMuch": "वापसी {{max}} से ज़्यादा नहीं हो सकती।"
+    },
+    "dues": {
+      "total": "कुल बकाया",
+      "byAmount": "ज़्यादा पहले",
+      "byOldest": "पुराना पहले",
+      "since": "{{date}} से",
+      "collect": "वसूलें",
+      "remind": "व्हाट्सऐप रिमाइंडर",
+      "reminderText": "नमस्ते {{name}}, {{gym}} की ओर से याद दिलाना: आपकी मेंबरशिप पर {{amount}} बकाया है। धन्यवाद!",
+      "emptyTitle": "कोई बकाया नहीं",
+      "emptyMessage": "सभी सदस्यों का पूरा भुगतान हो चुका है।"
     }
   },
   "search": {
@@ -431,7 +506,12 @@
     "emptyMessage": "आप जिन सदस्यों को हटाते हैं वे यहाँ रहते हैं ताकि आप उन्हें वापस ला सकें।",
     "deletedOn": "{{date}} को हटाया",
     "autoPurgeOn": "ट्रैश में {{days}} दिन बाद आइटम हमेशा के लिए हट जाते हैं।",
-    "autoPurgeOff": "अपने-आप सफ़ाई बंद है — आइटम तब तक रहेंगे जब तक आप उन्हें न हटाएँ।"
+    "autoPurgeOff": "अपने-आप सफ़ाई बंद है — आइटम तब तक रहेंगे जब तक आप उन्हें न हटाएँ।",
+    "emptyPayments": "हटाए गए भुगतान यहाँ रखे जाते हैं ताकि आप उन्हें वापस ला सकें।",
+    "paymentRestored": "{{receipt}} वापस लाया गया",
+    "paymentDeleted": "{{receipt}} स्थायी रूप से हटाया गया",
+    "deletePaymentTitle": "{{receipt}} स्थायी रूप से हटाएँ?",
+    "deletePaymentMessage": "{{name}} के {{amount}} हमेशा के लिए हट जाएँगे। इसे वापस नहीं किया जा सकता।"
   },
   "members": {
     "count_one": "{{count}} सदस्य",
@@ -843,5 +923,49 @@
       "emptyMessage": "इस सदस्य, उनके प्लान और भुगतान में बदलाव यहाँ दिखेंगे।",
       "system": "स्वचालित"
     }
+  },
+  "receipt": {
+    "title": "रसीद",
+    "refundTitle": "वापसी रसीद",
+    "number": "रसीद नं.",
+    "date": "तारीख",
+    "staff": "प्राप्तकर्ता",
+    "member": "सदस्य",
+    "code": "सदस्य कोड",
+    "phone": "फ़ोन",
+    "gstin": "GSTIN",
+    "plan": "प्लान",
+    "advance": "अग्रिम (अगले प्लान के लिए)",
+    "period": "अवधि",
+    "basePrice": "मूल कीमत",
+    "admission": "प्रवेश शुल्क",
+    "discount": "छूट",
+    "tax": "GST",
+    "cgst": "CGST",
+    "sgst": "SGST",
+    "total": "कुल",
+    "paidNow": "जमा राशि",
+    "refunded": "वापस की गई राशि",
+    "mode": "तरीका",
+    "reference": "रेफ़रेंस",
+    "note": "नोट",
+    "balanceDue": "बकाया",
+    "netAmount": "अभी कुल जमा",
+    "thankYou": "धन्यवाद! ट्रेनिंग जारी रखें।",
+    "notFound": "यह रसीद नहीं मिली।",
+    "pdfFailed": "रसीद PDF नहीं बन सकी। फिर से कोशिश करें।",
+    "storageFull": "iPhone में जगह नहीं है — कुछ जगह खाली करके फिर से कोशिश करें।",
+    "shareUnavailable": "इस डिवाइस पर शेयर उपलब्ध नहीं है।",
+    "shareA5": "रसीद भेजें (A5)",
+    "shareA4": "इनवॉइस भेजें (A4)",
+    "shareA4Short": "A4",
+    "print": "प्रिंट",
+    "whatsapp": "व्हाट्सऐप पर सारांश भेजें",
+    "whatsappShort": "व्हाट्सऐप",
+    "whatsappText": "नमस्ते {{name}}, {{gym}} में {{amount}} प्राप्त हुए (रसीद {{receipt}})। बकाया: {{due}}। धन्यवाद!",
+    "delete": "भुगतान हटाएँ",
+    "deleteTitle": "{{receipt}} हटाएँ?",
+    "deleteMessage": "{{name}} के {{amount}} ट्रैश में चले जाएँगे और गिने नहीं जाएँगे। रसीद नंबर दोबारा उपयोग नहीं होगा।",
+    "deleted": "{{receipt}} ट्रैश में गया"
   }
 }

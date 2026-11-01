@@ -19,3 +19,10 @@
   - Amount paid now, mode, reference, **balance due**
   - Terms text from settings, "Thank you" footer
   - A5 and A4 sizes; share via share sheet (WhatsApp, Mail, Files, Print via AirPrint).
+
+**Clarifications (M08, see CLAUDE.md Decisions Log 2026-11-01)**
+- "Balance due" on a receipt is the balance right after that payment.
+- A payment can be split oldest-first (default) or by plan by hand; with nothing due it is an advance.
+- Refunds are recorded against a plan (up to what was paid on it) or the unused advance, with a reason.
+- Without `reports.financial`, Collections/Refunds totals are masked; individual rows stay visible.
+- The WhatsApp button sends a text summary; the PDF itself is shared through the share sheet.

@@ -47,7 +47,7 @@ export function AddPlanSheet({ visible, onClose, onAdd }: AddPlanSheetProps) {
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={t('onboarding.plans.add')}>
-      <View style={{ gap: spacing.md, paddingVertical: spacing.md }}>
+      <View style={{ gap: spacing.md, paddingVertical: spacing.md, paddingHorizontal: spacing.lg }}>
         <Controller
           control={control}
           name="name"

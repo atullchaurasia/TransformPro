@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { View } from 'react-native';
 
 import { useTheme } from '@/theme';
@@ -19,12 +19,14 @@ export type ActionSheetProps<K extends string> = {
    * one is still on screen, so the chosen action must wait for the dismissal.
    */
   onSelect: (key: K) => void;
+  /** Optional content above the actions (e.g. a receipt preview). */
+  header?: ReactNode;
 };
 
 const DISMISS_FALLBACK_MS = 700;
 
 /** iOS-style list of actions in a bottom sheet. */
-export function ActionSheet<K extends string>({ visible, title, items, onClose, onSelect }: ActionSheetProps<K>) {
+export function ActionSheet<K extends string>({ visible, title, items, onClose, onSelect, header }: ActionSheetProps<K>) {
   const { colors } = useTheme();
   const pending = useRef<K | null>(null);
 
@@ -37,6 +39,7 @@ export function ActionSheet<K extends string>({ visible, title, items, onClose, 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={title} onDismiss={runPending}>
       <View>
+        {header}
         {items.map((item) => (
           <ListRow
             key={item.key}

@@ -15,7 +15,13 @@
         "NSCameraUsageDescription": "Camera is used to scan member QR codes for check-in and take member photos.",
         "NSPhotoLibraryUsageDescription": "Photo library is used to choose member photos and expense receipts.",
         "NSFaceIDUsageDescription": "Face ID is used to lock the app and protect your gym's data.",
-        "LSApplicationQueriesSchemes": ["whatsapp", "whatsapp-business", "sms", "tel", "mailto"],
+        "LSApplicationQueriesSchemes": [
+          "whatsapp",
+          "whatsapp-business",
+          "sms",
+          "tel",
+          "mailto"
+        ],
         "ITSAppUsesNonExemptEncryption": false,
         "UIFileSharingEnabled": true,
         "LSSupportsOpeningDocumentsInPlace": true,
@@ -36,7 +42,8 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 160
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,

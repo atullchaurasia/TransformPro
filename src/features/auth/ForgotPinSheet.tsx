@@ -47,7 +47,7 @@ export function ForgotPinSheet({ visible, onClose }: { visible: boolean; onClose
 
   return (
     <BottomSheet visible={visible} onClose={close} title={t('lock.forgotTitle')}>
-      <View style={{ gap: spacing.lg, paddingVertical: spacing.md }}>
+      <View style={{ gap: spacing.lg, paddingVertical: spacing.md, paddingHorizontal: spacing.lg }}>
         {verified ? (
           <PinSetup onComplete={save} onCancel={close} />
         ) : biometricEnabled ? (

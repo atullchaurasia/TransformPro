@@ -7,6 +7,7 @@ import { ActionSheet, AppText, Avatar, EmptyState, ErrorState, ListRow, Segmente
 import type { Member } from '@/db/models';
 import { useCan } from '@/features/auth/permissions';
 import { TRASH_RETENTION_DAYS, deleteMembersForever, loadTrashedMembers, restoreMember } from '@/features/members/memberActions';
+import { PaymentsTrashList } from '@/features/payments/PaymentsTrashList';
 import { resolvePhotoUri } from '@/services/photos';
 import { useDataVersion } from '@/store/dataVersionStore';
 import { confirm, toast } from '@/store/feedbackStore';
@@ -15,8 +16,8 @@ import { useTheme } from '@/theme';
 import { formatDate } from '@/utils/format';
 import { logger } from '@/utils/logger';
 
-// TODO(M08/M16/M17): add Payments, Enquiries and Expenses segments as those features land.
-type TrashTab = 'members';
+// TODO(M16/M17): add Enquiries and Expenses segments as those features land.
+type TrashTab = 'members' | 'payments';
 
 /** Trash (spec §10.2): restore, or delete permanently (owner only, type DELETE). */
 export default function TrashScreen() {
@@ -26,6 +27,7 @@ export default function TrashScreen() {
   const dataVersion = useDataVersion();
   const canRestore = useCan('members.delete');
   const canPurge = useCan('members.delete_permanent');
+  const canSeePayments = useCan('payments.view');
   const [tab, setTab] = useState<TrashTab>('members');
   const [members, setMembers] = useState<Member[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -101,12 +103,19 @@ export default function TrashScreen() {
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Stack.Screen options={{ title: t('more.items.trash'), headerLargeTitleEnabled: false }} />
       <View style={{ padding: spacing.lg, paddingBottom: spacing.sm, gap: spacing.sm }}>
-        <SegmentedControl<TrashTab> value={tab} onChange={setTab} options={[{ value: 'members', label: t('tabs.members') }]} />
+        <SegmentedControl<TrashTab>
+          value={tab}
+          onChange={setTab}
+          options={[
+            { value: 'members', label: t('tabs.members') },
+            ...(canSeePayments ? [{ value: 'payments' as const, label: t('tabs.payments') }] : []),
+          ]}
+        />
         <AppText variant="footnote" tone="secondary">
           {trash_auto_purge ? t('trash.autoPurgeOn', { days: TRASH_RETENTION_DAYS }) : t('trash.autoPurgeOff')}
         </AppText>
       </View>
-      <View style={{ flex: 1, backgroundColor: colors.surface }}>{body()}</View>
+      <View style={{ flex: 1, backgroundColor: colors.surface }}>{tab === 'payments' ? <PaymentsTrashList /> : body()}</View>
       {/* The typed DELETE confirm opens only after this sheet has closed (iOS can't stack modals). */}
       <ActionSheet<'restore' | 'purge'>
         visible={open}

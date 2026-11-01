@@ -413,6 +413,81 @@
       "bank_transfer": "Bank transfer",
       "cheque": "Cheque",
       "other": "Other"
+    },
+    "segment": {
+      "collections": "Collections",
+      "dues": "Dues",
+      "refunds": "Refunds"
+    },
+    "range": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "thisWeek": "This week",
+      "thisMonth": "This month",
+      "lastMonth": "Last month",
+      "custom": "Custom",
+      "from": "From",
+      "to": "To"
+    },
+    "totals": {
+      "collected": "Collected",
+      "refunded": "Refunded",
+      "count_one": "{{count}} payment",
+      "count_other": "{{count}} payments"
+    },
+    "emptyCollections": "No payments in this period",
+    "emptyRefunds": "No refunds in this period",
+    "emptyHint": "Pick another date range above.",
+    "memberEmptyTitle": "No payments yet",
+    "memberEmptyMessage": "Payments and refunds for this member appear here.",
+    "record": {
+      "pickMember": "Choose member",
+      "change": "Change",
+      "openPlans": "Due on plans",
+      "due": "due {{amount}}",
+      "nothingDue": "Nothing is due. Anything paid now is kept as an advance for their next plan.",
+      "payOnPlan": "Pay on this plan",
+      "splitManually": "Split by plan myself",
+      "splitHint": "Otherwise the oldest plan is paid first.",
+      "advancePart": "{{amount}} kept as an advance",
+      "amount": "Amount paid",
+      "advanceAmount": "Advance amount",
+      "manualTotal": "Total: {{amount}}",
+      "note": "Note (optional)",
+      "save": "Save payment of {{amount}}",
+      "saved": "Payment of {{amount}} recorded",
+      "failed": "Couldn't save the payment. Nothing was changed — please try again.",
+      "fixAmount": "Check the amount first.",
+      "doneTitle": "Payment recorded",
+      "error": {
+        "invalid_amount": "Enter an amount for at least one plan.",
+        "over_due": "One of the amounts is more than that plan's due."
+      }
+    },
+    "refund": {
+      "title": "Record refund",
+      "short": "Refund",
+      "against": "Refund against",
+      "upTo": "up to {{amount}}",
+      "amount": "Refund amount",
+      "reason": "Reason",
+      "submit": "Record refund",
+      "saved": "Refund recorded",
+      "done": "Refund of {{amount}} recorded",
+      "nothing": "Nothing has been paid by this member that can be refunded.",
+      "pickTarget": "Choose what the refund is for.",
+      "tooMuch": "The refund can't be more than {{max}}."
+    },
+    "dues": {
+      "total": "Total due",
+      "byAmount": "Highest first",
+      "byOldest": "Oldest first",
+      "since": "since {{date}}",
+      "collect": "Collect",
+      "remind": "WhatsApp reminder",
+      "reminderText": "Hi {{name}}, a gentle reminder from {{gym}}: {{amount}} is due on your membership. Thank you!",
+      "emptyTitle": "No dues",
+      "emptyMessage": "Every member is fully paid up."
     }
   },
   "search": {
@@ -431,7 +506,12 @@
     "emptyMessage": "Members you delete are kept here so you can restore them.",
     "deletedOn": "Deleted {{date}}",
     "autoPurgeOn": "Items are deleted permanently after {{days}} days in Trash.",
-    "autoPurgeOff": "Automatic clean-up is off — items stay until you delete them."
+    "autoPurgeOff": "Automatic clean-up is off — items stay until you delete them.",
+    "emptyPayments": "Deleted payments are kept here so you can restore them.",
+    "paymentRestored": "{{receipt}} restored",
+    "paymentDeleted": "{{receipt}} deleted permanently",
+    "deletePaymentTitle": "Delete {{receipt}} permanently?",
+    "deletePaymentMessage": "{{amount}} from {{name}} will be removed for good. This cannot be undone."
   },
   "members": {
     "count_one": "{{count}} member",
@@ -843,5 +923,49 @@
       "emptyMessage": "Changes to this member, their plans and payments appear here.",
       "system": "Automatic"
     }
+  },
+  "receipt": {
+    "title": "Receipt",
+    "refundTitle": "Refund receipt",
+    "number": "Receipt no.",
+    "date": "Date",
+    "staff": "Received by",
+    "member": "Member",
+    "code": "Member code",
+    "phone": "Phone",
+    "gstin": "GSTIN",
+    "plan": "Plan",
+    "advance": "Advance (for the next plan)",
+    "period": "Period",
+    "basePrice": "Base price",
+    "admission": "Admission fee",
+    "discount": "Discount",
+    "tax": "GST",
+    "cgst": "CGST",
+    "sgst": "SGST",
+    "total": "Total",
+    "paidNow": "Amount paid",
+    "refunded": "Amount refunded",
+    "mode": "Mode",
+    "reference": "Reference",
+    "note": "Note",
+    "balanceDue": "Balance due",
+    "netAmount": "Total paid now",
+    "thankYou": "Thank you! Keep training.",
+    "notFound": "This receipt couldn't be found.",
+    "pdfFailed": "Couldn't create the receipt PDF. Please try again.",
+    "storageFull": "Your iPhone is out of storage — free some space and try again.",
+    "shareUnavailable": "Sharing isn't available on this device.",
+    "shareA5": "Share receipt (A5)",
+    "shareA4": "Share invoice (A4)",
+    "shareA4Short": "A4",
+    "print": "Print",
+    "whatsapp": "Send summary on WhatsApp",
+    "whatsappShort": "WhatsApp",
+    "whatsappText": "Hi {{name}}, we received {{amount}} at {{gym}} (receipt {{receipt}}). Balance due: {{due}}. Thank you!",
+    "delete": "Delete payment",
+    "deleteTitle": "Delete {{receipt}}?",
+    "deleteMessage": "{{amount}} from {{name}} moves to Trash and no longer counts. The receipt number is never reused.",
+    "deleted": "{{receipt}} moved to Trash"
   }
 }

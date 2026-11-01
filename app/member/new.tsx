@@ -13,7 +13,7 @@ import { BasicSection, DetailSections, GymSection } from '@/features/members/Mem
 import { DuplicatePhoneSheet } from '@/features/members/DuplicatePhoneSheet';
 import { PhotoField } from '@/features/members/PhotoField';
 import { PlanPaymentStep } from '@/features/members/PlanPaymentStep';
-import { SuccessSheet } from '@/features/members/SuccessSheet';
+import { SuccessPanel } from '@/features/members/SuccessPanel';
 import { createMember, nextMemberCode } from '@/features/members/memberActions';
 import { emptyMemberForm, formToMember, type MemberFormValues } from '@/features/members/memberSchema';
 import { useMemberForm } from '@/features/members/useMemberForm';
@@ -86,6 +86,25 @@ export default function NewMemberScreen() {
 
   if (!canCreate) return <ErrorState message={t('auth.noPermission')} />;
 
+  if (result) {
+    return (
+      <>
+        <Stack.Screen options={{ title: t('members.success.title'), headerLeft: () => null }} />
+        <FormScreen>
+          <SuccessPanel
+            result={result}
+            onAddAnother={addAnother}
+            onDone={() => {
+              const id = result.member.id;
+              router.back();
+              openMember(id);
+            }}
+          />
+        </FormScreen>
+      </>
+    );
+  }
+
   return (
     <>
       <Stack.Screen
@@ -138,14 +157,6 @@ export default function NewMemberScreen() {
           clearDuplicates();
           router.back();
           openMember(m.id);
-        }}
-      />
-      <SuccessSheet
-        result={result}
-        onAddAnother={addAnother}
-        onDone={() => {
-          setResult(null);
-          router.back();
         }}
       />
     </>

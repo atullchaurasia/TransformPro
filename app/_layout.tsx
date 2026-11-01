@@ -74,6 +74,8 @@ function RootStack() {
           <Stack.Screen name="member/[id]/edit" options={{ presentation: 'modal' }} />
           <Stack.Screen name="member/[id]/renew" options={{ presentation: 'modal' }} />
           <Stack.Screen name="member/[id]/subscription" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="payment/new" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="payment/refund" options={{ presentation: 'modal' }} />
           <Stack.Screen name="search" options={{ presentation: 'modal' }} />
           <Stack.Screen name="dev/ui-kit" options={{ title: t('uiKit.title') }} />
           <Stack.Screen name="dev/db" options={{ title: t('devDb.title') }} />
