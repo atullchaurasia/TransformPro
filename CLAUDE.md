@@ -497,3 +497,23 @@ The build is split into milestones in **`docs/ROADMAP.md`**. For each milestone:
   - History and Absentees live in the Check-in tab stack (header buttons). Absentees = Active,
     Expiring or In grace and not seen for N days; members who never came count from their joining date.
   - Auto check-out runs at app start (check-out time = check-in + `auto_checkout_hours`).
+- 2026-11-01 — M10 dashboard decisions:
+  - **Where numbers come from:** money, attendance, admissions, renewals, renewal rate, enquiry
+    follow-ups and all chart series are indexed SQL aggregates (`repositories/dashboard.ts`, new
+    migration **002** adds indexes on `members.joining_date`, `subscriptions.created_at`,
+    `subscriptions.renewed_from_subscription_id`, `audit_log.entity_id`). Member statuses need the
+    §6.1 rules, so status-based counts come from the members-list pipeline, as in M06.
+  - **Cards match lists:** `memberBuckets` (pure) computes every member list once; the card shows
+    its length and `/home/list?bucket=` shows the same array.
+  - **Definitions:** "expiring in the next N days" excludes today (it has its own row); win-back =
+    Expired or In grace with ≤ 30 days since expiry; renewal = a subscription with
+    `renewed_from_subscription_id`, counted by `created_at` in local time; renewal rate = memberships
+    ending this month up to today that have a renewal; net profit = collections − refunds − expenses;
+    collections = payments (not refunds), matching the Payments tab. 29 Feb birthdays show on 28 Feb
+    in non-leap years. Attention rows with nothing in them are hidden ("All clear" when all are empty).
+  - **Masking:** without `reports.financial` all money on Home shows "••••" and the collections chart
+    is hidden; counts stay visible.
+  - **Donut colours** = the status tokens, ordered active, frozen, expired, upcoming, no plan so
+    neighbours pass the dataviz CVD check; the legend shows names and counts (No-plan grey and the
+    bright dark-mode steps are accepted with that secondary encoding).
+  - Peak hours use `strftime('%H', check_in_at, 'localtime')`, i.e. the phone's time zone.

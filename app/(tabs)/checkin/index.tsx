@@ -31,7 +31,7 @@ export default function CheckinScreen() {
   const { colors, spacing } = useTheme();
   const insets = useSafeAreaInsets();
   const focused = useIsFocused();
-  const params = useLocalSearchParams<{ memberId?: string; at?: string }>();
+  const params = useLocalSearchParams<{ memberId?: string; at?: string; view?: string }>();
   const canMark = useCan('attendance.mark');
   const kiosk = useKioskStore((s) => s.active);
   const front = useKioskStore((s) => s.frontCamera);
@@ -47,6 +47,11 @@ export default function CheckinScreen() {
     void processMember(params.memberId, 'search');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.memberId, params.at, canMark]);
+
+  // Dashboard "Check-ins today" card opens Today's list.
+  useEffect(() => {
+    if (params.view === 'today') setMode('today');
+  }, [params.view, params.at]);
 
   if (!canMark) return <ErrorState message={t('auth.noPermission')} />;
 

@@ -26,6 +26,7 @@ function row(id: string, extra: Partial<MemberListRow> = {}): MemberListRow {
     photoUri: null,
     gender: 'male',
     dateOfBirth: null,
+    anniversaryDate: null,
     joiningDate: '2026-01-01',
     createdAt: '2026-01-01T00:00:00Z',
     branchId: null,

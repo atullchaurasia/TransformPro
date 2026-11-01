@@ -18,7 +18,7 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M07 | Member profile + subscription lifecycle | Core ops | ✅ |
 | M08 | Payments, dues, refunds, receipt PDF | Core ops | ✅ |
 | M09 | Check-in: search, today's list, QR, kiosk, history | Core ops | ✅ |
-| M10 | Dashboard | Core ops | ⬜ |
+| M10 | Dashboard | Core ops | ✅ |
 | M11 | Backup, restore, export, CSV import | Data safety | ⬜ |
 | M12 | iOS build pipeline + first sideload + owner README | Data safety | ⬜ |
 | M13 | Membership card | Growth | ⬜ |
@@ -99,6 +99,10 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M09 | Kiosk mode: tabs and header hidden, screen stays awake, front camera works, red cards clear after 6 s, Exit needs your PIN or the owner's (wrong PINs → cooldown) | ⬜ |
 | M09 | Search & mark (recent + search), Today's list (All / Inside / Left, Check out, Delete wrong entry), auto check-out after the set hours on app open | ⬜ |
 | M09 | Members swipe Check-in, profile Check-in and Home "+" Mark attendance open the Check-in tab for that member; History (date chips + custom) and Absentees (7 / 14 / 30) open from the header; profile Attendance calendar + stats | ⬜ |
+| M10 | **Done when:** each Today card, Attention row and donut legend entry opens its list and the count matches the list; Check-ins → Today's list; Collection → Payments | ⬜ |
+| M10 | **Done when:** with Developer → "Insert 2,000 demo members" (plus some payments / check-ins) Home opens in under ~0.5 s and pull-to-refresh works | ⬜ |
+| M10 | Charts (collections bar, attendance line, peak hours) and the donut look right in light + dark, 7/30 toggle works, labels don't collide; staff without `reports.financial` see •••• and no collections chart | ⬜ |
+| M10 | Backup banner shows (never backed up) and opens the M11 placeholder; Birthdays/Anniversaries "Wish" opens WhatsApp | ⬜ |
 | M08 | Sheets no longer touch the screen edges (filters, duplicate phone, member picker, add plan, forgot PIN); photo picker and Home "+" actions open after their sheet closes | ⬜ |
 
 ### Cross-cutting checklist (every milestone)
@@ -327,19 +331,21 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
 
 ### M10 · Dashboard
 **Spec:** `dashboard.md` (§10.1), `navigation.md` (FAB, search)
-- [ ] All numbers come from **indexed SQL aggregates**; target < 500 ms load with 5,000 members, 20,000 payments and 100,000 attendance rows
-- [ ] **Header:** gym name/logo, greeting with the staff member's name, today's date, search, lock icon
-- [ ] **Today cards** (each opens a filtered list): check-ins + currently inside; collection with cash/UPI/card split; expenses; new admissions; renewals
-- [ ] **Attention:** expiring today; expiring within N days; expired in the last 30 days and not renewed (win-back); members with dues (count + total); birthdays today with "Send wishes" (register → M14); anniversaries today; enquiry follow-ups due today or overdue; members absent 7+ days; frozen memberships ending soon
-- [ ] **Membership stats donut:** total, active, expired, frozen, upcoming, no plan
-- [ ] **This month:** collections vs last month (₹ and % change), expenses, net profit, new admissions, renewals, renewal rate %
-- [ ] **Charts:** collections bar (7/30 days), attendance line (7/30 days), peak hours by hour of day (last 30 days)
-- [ ] **Backup banner** when `last_backup_at` is older than `backup_reminder_days` or missing ("Back up now" → M11 register)
-- [ ] **Quick-action FAB:** Add member, Record payment, Mark attendance, Add enquiry (register → M16), Add expense (register → M17)
-- [ ] Pull-to-refresh; every money number respects `reports.financial` masking
-- [ ] Expense and enquiry cards read from tables that already exist (they show 0 until M16/M17 add data)
+- [x] All numbers come from **indexed SQL aggregates**; target < 500 ms load with 5,000 members, 20,000 payments and 100,000 attendance rows
+- [x] **Header:** gym name/logo, greeting with the staff member's name, today's date, search, lock icon
+- [x] **Today cards** (each opens a filtered list): check-ins + currently inside; collection with cash/UPI/card split; expenses; new admissions; renewals
+- [x] **Attention:** expiring today; expiring within N days; expired in the last 30 days and not renewed (win-back); members with dues (count + total); birthdays today with "Send wishes" (register → M14); anniversaries today; enquiry follow-ups due today or overdue; members absent 7+ days; frozen memberships ending soon
+- [x] **Membership stats donut:** total, active, expired, frozen, upcoming, no plan
+- [x] **This month:** collections vs last month (₹ and % change), expenses, net profit, new admissions, renewals, renewal rate %
+- [x] **Charts:** collections bar (7/30 days), attendance line (7/30 days), peak hours by hour of day (last 30 days)
+- [x] **Backup banner** when `last_backup_at` is older than `backup_reminder_days` or missing ("Back up now" → M11 register)
+- [x] **Quick-action FAB:** Add member, Record payment, Mark attendance, Add enquiry (register → M16), Add expense (register → M17)
+- [x] Pull-to-refresh; every money number respects `reports.financial` masking
+- [x] Expense and enquiry cards read from tables that already exist (they show 0 until M16/M17 add data)
 
 **Done when:** every card opens its filtered list, the numbers match those lists, and it loads fast with the demo dataset.
+
+> Status: ✅ tsc · ✅ jest (205 tests; every member bucket, % change, net profit, renewal rate, daily series, peak hours, backup reminder, aggregates against real rows, and the 5,000 members / 20,000 payments / 100,000 check-ins load under the 1.5 s CI guard) · ✅ expo-doctor 20/20 · ✅ iOS bundle exports. Migration 002 adds the dashboard indexes. Device timing (< 500 ms) and chart looks → Pending device checks.
 
 ---
 
@@ -537,8 +543,10 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Dues "WhatsApp reminder" (templated) | M08 | M14 | ⬜ |
 | Attendance history export | M09 | M11 | ⬜ |
 | Absentees bulk message | M09 | M14 | ⬜ |
-| Dashboard "Send wishes" | M10 | M14 | ⬜ |
+| Dashboard "Send wishes" (plain WhatsApp wishes now; templates in M14) | M10 | M14 | ⬜ |
 | Dashboard "Back up now" banner | M10 | M11 | ⬜ |
+| Dashboard "Expenses" card → today's expenses list | M10 | M17 | ⬜ |
+| Dashboard "Enquiry follow-ups due" row → follow-ups list | M10 | M16 | ⬜ |
 | FAB "Add enquiry" | M01 | M16 | ⬜ |
 | FAB "Add expense" | M01 | M17 | ⬜ |
 | Start-up pipeline: reschedule notifications | M11 | M15 | ⬜ |

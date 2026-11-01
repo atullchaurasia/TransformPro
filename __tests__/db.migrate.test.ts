@@ -56,15 +56,17 @@ describe('migrations', () => {
     expect(plan.pending).toHaveLength(0);
   });
 
-  const v2: Migration = { version: 2, name: 'add_test', up: (db) => db.execAsync('ALTER TABLE branches ADD COLUMN test_col TEXT') };
+  // The next version after the real ones, so these tests keep working as migrations are added.
+const NEXT = LATEST_SCHEMA_VERSION + 1;
+const v2: Migration = { version: NEXT, name: 'add_test', up: (db) => db.execAsync('ALTER TABLE branches ADD COLUMN test_col TEXT') };
 
   it('takes a safety backup before upgrading an existing DB', async () => {
     const db = createTestDb();
     await runMigrations(db, MIGRATIONS);
     const before = jest.fn().mockResolvedValue(undefined);
     await runMigrations(db, [...MIGRATIONS, v2], { beforeMigrate: before });
-    expect(before).toHaveBeenCalledWith(expect.objectContaining({ fromVersion: 1, toVersion: 2 }));
-    expect(await getSchemaVersion(db)).toBe(2);
+    expect(before).toHaveBeenCalledWith(expect.objectContaining({ fromVersion: LATEST_SCHEMA_VERSION, toVersion: NEXT }));
+    expect(await getSchemaVersion(db)).toBe(NEXT);
   });
 
   it('does NOT migrate when the safety backup fails', async () => {
@@ -72,14 +74,14 @@ describe('migrations', () => {
     await runMigrations(db, MIGRATIONS);
     const failingBackup = jest.fn().mockRejectedValue(new Error('disk full'));
     await expect(runMigrations(db, [...MIGRATIONS, v2], { beforeMigrate: failingBackup })).rejects.toThrow('disk full');
-    expect(await getSchemaVersion(db)).toBe(1);
+    expect(await getSchemaVersion(db)).toBe(LATEST_SCHEMA_VERSION);
   });
 
   it('rolls back a failing migration and keeps the previous version', async () => {
     const db = createTestDb();
     await runMigrations(db, MIGRATIONS);
     const broken: Migration = {
-      version: 2,
+      version: NEXT,
       name: 'broken',
       up: async (d) => {
         await d.execAsync('ALTER TABLE branches ADD COLUMN half_done TEXT');
@@ -87,7 +89,7 @@ describe('migrations', () => {
       },
     };
     await expect(runMigrations(db, [...MIGRATIONS, broken])).rejects.toThrow();
-    expect(await getSchemaVersion(db)).toBe(1);
+    expect(await getSchemaVersion(db)).toBe(LATEST_SCHEMA_VERSION);
     const cols = (await db.getAllAsync<{ name: string }>('PRAGMA table_info(branches)', [])).map((c) => c.name);
     expect(cols).not.toContain('half_done');
   });

@@ -17,6 +17,7 @@ export type MemberListRow = Pick<
   | 'photoUri'
   | 'gender'
   | 'dateOfBirth'
+  | 'anniversaryDate'
   | 'joiningDate'
   | 'createdAt'
   | 'branchId'

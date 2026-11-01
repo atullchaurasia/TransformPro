@@ -39,3 +39,9 @@ new admissions, renewals, renewal rate %.
 show a yellow banner "Last backup: X days ago — Back up now".
 
 Pull-to-refresh. Every number respects permissions (§8).
+
+**Clarifications (M10, see CLAUDE.md Decisions Log 2026-11-01)**
+- "Expiring in next N days" doesn't include today (Expiring today is its own row).
+- Net profit = collections − refunds − expenses. Renewal rate = memberships that ended this month (so far) which were renewed.
+- Attention rows with no members are hidden; "All clear" shows when every row is empty.
+- Without `reports.financial`, money values show •••• and the collections chart is hidden.

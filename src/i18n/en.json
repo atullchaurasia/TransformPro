@@ -1084,5 +1084,87 @@
       "emptyMessage_one": "No active member has been away for {{count}} day.",
       "emptyMessage_other": "No active member has been away for {{count}} days."
     }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "Good morning, {{name}}",
+      "afternoon": "Good afternoon, {{name}}",
+      "evening": "Good evening, {{name}}"
+    },
+    "backup": {
+      "never": "You have never backed up your gym data.",
+      "daysAgo_one": "Last backup: {{count}} day ago",
+      "daysAgo_other": "Last backup: {{count}} days ago",
+      "now": "Back up now"
+    },
+    "today": {
+      "title": "Today",
+      "checkins": "Check-ins",
+      "inside_one": "{{count}} inside now",
+      "inside_other": "{{count}} inside now",
+      "collection": "Collection",
+      "expenses": "Expenses",
+      "admissions": "New admissions",
+      "renewals": "Renewals"
+    },
+    "attention": {
+      "title": "Needs attention",
+      "allClear": "All clear — nothing needs attention today.",
+      "duesTotal": "{{amount}} due in total",
+      "followUps": "Enquiry follow-ups due"
+    },
+    "bucket": {
+      "admissionsToday": "New admissions today",
+      "renewalsToday": "Renewals today",
+      "expiringToday": "Expiring today",
+      "expiringSoon": "Expiring in the next {{days}} days",
+      "winBack": "Expired in the last 30 days",
+      "dues": "Members with dues",
+      "birthdays": "Birthdays today",
+      "anniversaries": "Anniversaries today",
+      "absent": "Not seen for 7+ days",
+      "frozenEnding": "Freezes ending soon",
+      "statusActive": "Active members",
+      "statusExpired": "Expired members",
+      "statusFrozen": "Frozen members",
+      "statusUpcoming": "Upcoming members",
+      "statusNoPlan": "Members without a plan",
+      "all": "All members"
+    },
+    "listEmpty": "Nobody here right now.",
+    "wishes": {
+      "send": "Wish",
+      "birthday": "Happy birthday, {{name}}! 🎉 Wishing you a great year ahead — from all of us at {{gym}}.",
+      "anniversary": "Happy anniversary, {{name}}! 💐 Warm wishes from all of us at {{gym}}."
+    },
+    "stats": {
+      "title": "Members",
+      "total": "total"
+    },
+    "month": {
+      "title": "This month",
+      "up": "▲ {{percent}}% vs last month",
+      "down": "▼ {{percent}}% vs last month",
+      "lastMonth": "Last month: {{amount}}",
+      "refunds": "Refunds",
+      "expenses": "Expenses",
+      "netProfit": "Net profit",
+      "admissions": "New admissions",
+      "renewals": "Renewals",
+      "renewalRate": "Renewal rate"
+    },
+    "charts": {
+      "days_one": "Last {{count}} day",
+      "days_other": "Last {{count}} days",
+      "collections": "Collections",
+      "collectionsA11y": "Collections chart: {{amount}} in the last {{count}} days",
+      "attendance": "Attendance",
+      "visits_one": "{{count}} visit",
+      "visits_other": "{{count}} visits",
+      "peak": "Peak hours (last 30 days)",
+      "peakA11y": "Check-ins by hour of day",
+      "busiest": "Busiest: {{from}}–{{to}}",
+      "noVisits": "No check-ins yet."
+    }
   }
 }

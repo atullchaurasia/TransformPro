@@ -118,7 +118,7 @@ export async function listMemberVisits(db: Db, memberId: string): Promise<Attend
 /** "Recent members" for Search & mark: whoever checked in most recently. */
 export async function listRecentVisitors(db: Db, limit = 15): Promise<MemberListRow[]> {
   const rows = await db.getAllAsync<Row>(
-    `SELECT m.id, m.member_code, m.full_name, m.phone, m.photo_uri, m.gender, m.date_of_birth, m.joining_date, m.created_at, m.branch_id, m.assigned_trainer_id
+    `SELECT m.id, m.member_code, m.full_name, m.phone, m.photo_uri, m.gender, m.date_of_birth, m.anniversary_date, m.joining_date, m.created_at, m.branch_id, m.assigned_trainer_id
      FROM attendance a JOIN members m ON m.id = a.member_id
      WHERE m.deleted_at IS NULL GROUP BY m.id ORDER BY MAX(a.check_in_at) DESC LIMIT ${Math.trunc(limit)}`,
     [],

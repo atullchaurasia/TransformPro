@@ -1084,5 +1084,87 @@
       "emptyMessage_one": "कोई सक्रिय सदस्य {{count}} दिन से गैरहाज़िर नहीं है।",
       "emptyMessage_other": "कोई सक्रिय सदस्य {{count}} दिन से गैरहाज़िर नहीं है।"
     }
+  },
+  "dashboard": {
+    "greeting": {
+      "morning": "सुप्रभात, {{name}}",
+      "afternoon": "नमस्कार, {{name}}",
+      "evening": "शुभ संध्या, {{name}}"
+    },
+    "backup": {
+      "never": "आपने अभी तक जिम डेटा का बैकअप नहीं लिया है।",
+      "daysAgo_one": "आख़िरी बैकअप: {{count}} दिन पहले",
+      "daysAgo_other": "आख़िरी बैकअप: {{count}} दिन पहले",
+      "now": "अभी बैकअप लें"
+    },
+    "today": {
+      "title": "आज",
+      "checkins": "चेक-इन",
+      "inside_one": "अभी {{count}} अंदर",
+      "inside_other": "अभी {{count}} अंदर",
+      "collection": "वसूली",
+      "expenses": "खर्च",
+      "admissions": "नए दाख़िले",
+      "renewals": "रिन्यूअल"
+    },
+    "attention": {
+      "title": "ध्यान दें",
+      "allClear": "सब ठीक है — आज किसी चीज़ पर ध्यान देने की ज़रूरत नहीं।",
+      "duesTotal": "कुल बकाया {{amount}}",
+      "followUps": "पूछताछ फ़ॉलो-अप बाकी"
+    },
+    "bucket": {
+      "admissionsToday": "आज के नए दाख़िले",
+      "renewalsToday": "आज के रिन्यूअल",
+      "expiringToday": "आज खत्म हो रहे",
+      "expiringSoon": "अगले {{days}} दिनों में खत्म",
+      "winBack": "पिछले 30 दिनों में खत्म",
+      "dues": "बकाया वाले सदस्य",
+      "birthdays": "आज जन्मदिन",
+      "anniversaries": "आज सालगिरह",
+      "absent": "7+ दिन से नहीं आए",
+      "frozenEnding": "जल्द खत्म हो रहे फ्रीज़",
+      "statusActive": "सक्रिय सदस्य",
+      "statusExpired": "खत्म सदस्यता",
+      "statusFrozen": "फ्रीज़ सदस्य",
+      "statusUpcoming": "आने वाले सदस्य",
+      "statusNoPlan": "बिना प्लान के सदस्य",
+      "all": "सभी सदस्य"
+    },
+    "listEmpty": "अभी यहाँ कोई नहीं।",
+    "wishes": {
+      "send": "शुभकामना",
+      "birthday": "जन्मदिन मुबारक हो, {{name}}! 🎉 {{gym}} परिवार की ओर से शुभकामनाएँ।",
+      "anniversary": "सालगिरह मुबारक हो, {{name}}! 💐 {{gym}} परिवार की ओर से शुभकामनाएँ।"
+    },
+    "stats": {
+      "title": "सदस्य",
+      "total": "कुल"
+    },
+    "month": {
+      "title": "इस महीने",
+      "up": "▲ पिछले महीने से {{percent}}% ज़्यादा",
+      "down": "▼ पिछले महीने से {{percent}}% कम",
+      "lastMonth": "पिछला महीना: {{amount}}",
+      "refunds": "वापसी",
+      "expenses": "खर्च",
+      "netProfit": "शुद्ध लाभ",
+      "admissions": "नए दाख़िले",
+      "renewals": "रिन्यूअल",
+      "renewalRate": "रिन्यूअल दर"
+    },
+    "charts": {
+      "days_one": "पिछले {{count}} दिन",
+      "days_other": "पिछले {{count}} दिन",
+      "collections": "वसूली",
+      "collectionsA11y": "वसूली चार्ट: पिछले {{count}} दिनों में {{amount}}",
+      "attendance": "उपस्थिति",
+      "visits_one": "{{count}} विज़िट",
+      "visits_other": "{{count}} विज़िट",
+      "peak": "सबसे व्यस्त समय (पिछले 30 दिन)",
+      "peakA11y": "दिन के घंटे के हिसाब से चेक-इन",
+      "busiest": "सबसे व्यस्त: {{from}}–{{to}}",
+      "noVisits": "अभी कोई चेक-इन नहीं।"
+    }
   }
 }

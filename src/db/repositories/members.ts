@@ -6,7 +6,7 @@ import type { BindValue, Db } from '../types';
 import { membersRepo, subscriptionsRepo } from './index';
 
 const LIST_COLUMNS =
-  'id, member_code, full_name, phone, photo_uri, gender, date_of_birth, joining_date, created_at, branch_id, assigned_trainer_id';
+  'id, member_code, full_name, phone, photo_uri, gender, date_of_birth, anniversary_date, joining_date, created_at, branch_id, assigned_trainer_id';
 
 type Row = Record<string, unknown>;
 
@@ -36,7 +36,8 @@ function searchClause(search: string): { sql: string; params: BindValue[] } {
 export type MemberListData = {
   members: MemberListRow[];
   subscriptions: ListSubscription[];
-  openFreezes: { memberId: string; subscriptionId: string; endedAt: string | null }[];
+  /** `toDate` = last frozen day of a fixed freeze (null = open-ended) — for "frozen ending soon". */
+  openFreezes: { memberId: string; subscriptionId: string; endedAt: string | null; toDate: string | null }[];
   netPaidBySubscription: Map<string, number>;
   advanceByMember: Map<string, number>;
   lastVisitByMember: Map<string, string>;
@@ -59,8 +60,8 @@ export async function loadMemberListData(db: Db, search = ''): Promise<MemberLis
     )
   ).map((r) => subscriptionsRepo.fromRow(r) as unknown as ListSubscription);
 
-  const openFreezes = await db.getAllAsync<{ memberId: string; subscriptionId: string; endedAt: null }>(
-    'SELECT member_id AS memberId, subscription_id AS subscriptionId, NULL AS endedAt FROM freezes WHERE ended_at IS NULL',
+  const openFreezes = await db.getAllAsync<{ memberId: string; subscriptionId: string; endedAt: null; toDate: string | null }>(
+    'SELECT member_id AS memberId, subscription_id AS subscriptionId, NULL AS endedAt, to_date AS toDate FROM freezes WHERE ended_at IS NULL',
     [],
   );
 
