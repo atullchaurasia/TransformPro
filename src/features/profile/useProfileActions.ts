@@ -6,6 +6,7 @@ import { renewalTarget } from '@/domain/lifecycle';
 import { firstName } from '@/domain/templates';
 import { useCan } from '@/features/auth/permissions';
 import { moveMembersToTrash } from '@/features/members/memberActions';
+import { openCheckin } from '@/features/members/useMemberRowActions';
 import { openComingSoon } from '@/features/navigation/comingSoon';
 import { callPhone, openSms, openWhatsApp } from '@/services/messaging';
 import { confirm, toast } from '@/store/feedbackStore';
@@ -80,8 +81,7 @@ export function useProfileActions(profile: LoadedProfile | null) {
         if ((await openSms(member.phone)) === 'unavailable') toast.error(t('profile.cantSms'));
         return;
       case 'checkin':
-        // TODO(M09): check this member in with the §6.8 rules.
-        return openComingSoon('M09', t('members.actions.checkin'));
+        return openCheckin(member.id);
       case 'renew':
         return openRenew(profile);
       case 'collect':

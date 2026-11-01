@@ -967,5 +967,122 @@
     "deleteTitle": "Delete {{receipt}}?",
     "deleteMessage": "{{amount}} from {{name}} moves to Trash and no longer counts. The receipt number is never reused.",
     "deleted": "{{receipt}} moved to Trash"
+  },
+  "checkin": {
+    "mode": {
+      "scan": "Scan QR",
+      "search": "Search & mark",
+      "today": "Today's list"
+    },
+    "scanHint": "Point the camera at the member’s QR code",
+    "frontCamera": "Front camera",
+    "sound": "Sound",
+    "mark": "Check in",
+    "recent": "Recent members",
+    "noRecent": "No check-ins yet. Search a member above.",
+    "checkOut": "Check out",
+    "checkedOutName": "{{name}} checked out",
+    "inside": "Inside",
+    "minutes_one": "{{count}} min",
+    "minutes_other": "{{count}} min",
+    "openProfile": "Open profile",
+    "deleteEntry": "Delete wrong entry",
+    "deleteTitle": "Delete this check-in for {{name}}?",
+    "deleteMessage": "Use this only for a mistake. A session it used is given back.",
+    "deleted": "Check-in deleted",
+    "todayEmptyTitle": "Nobody yet today",
+    "todayEmptyMessage": "Check-ins from the scanner or Search & mark appear here.",
+    "noVisitsMonth": "No visits this month.",
+    "override": "Override",
+    "overrideReason": "Reason for letting them in",
+    "overrideConfirm": "Check in anyway",
+    "filter": {
+      "all": "All",
+      "inside": "Inside",
+      "left": "Left"
+    },
+    "camera": {
+      "title": "Camera needed",
+      "message": "Allow the camera to scan member QR codes.",
+      "denied": "Camera access is off. Turn it on in iPhone Settings → TransformPro → Camera.",
+      "allow": "Allow camera",
+      "openSettings": "Open Settings"
+    },
+    "result": {
+      "checkedIn": "Checked in {{time}}",
+      "checkedOut": "Checked out {{time}}",
+      "inside": "Already inside since {{time}}",
+      "blocked": "Not allowed in",
+      "overridden": "Let in by override — noted in the activity log.",
+      "seeDesk": "Please see the front desk.",
+      "error": {
+        "not_ours": "This QR code isn’t a TransformPro member card.",
+        "unknown_member": "No member found for this code.",
+        "failed": "Something went wrong. Please try again."
+      }
+    },
+    "warning": {
+      "expiring": "Membership is expiring soon.",
+      "grace": "Membership has ended — in grace period.",
+      "dues": "Dues pending: {{amount}}"
+    },
+    "reason": {
+      "expired": "Membership has expired.",
+      "no_plan": "No membership plan.",
+      "upcoming": "Membership hasn’t started yet.",
+      "frozen": "Membership is frozen.",
+      "dues": "Dues pending: {{amount}}",
+      "no_sessions_left": "No sessions left on this plan.",
+      "already_checked_in": "Already checked in today."
+    },
+    "kiosk": {
+      "start": "Kiosk mode",
+      "started": "Kiosk mode on — the PIN is needed to leave it.",
+      "exit": "Exit kiosk",
+      "exitTitle": "Exit kiosk mode",
+      "exitHint": "Enter your PIN or the owner’s PIN.",
+      "wrongPin": "Wrong PIN.",
+      "cooldown": "Too many wrong PINs. Try again in {{seconds}} s."
+    },
+    "stats": {
+      "thisMonth": "This month",
+      "streak": "Streak",
+      "average": "Avg. visit",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days"
+    },
+    "calendar": {
+      "a11y": "Attendance calendar",
+      "previous": "Previous month",
+      "next": "Next month",
+      "visited": "Visited on the {{day}}",
+      "mon": "M",
+      "tue": "T",
+      "wed": "W",
+      "thu": "T",
+      "fri": "F",
+      "sat": "S",
+      "sun": "S"
+    },
+    "history": {
+      "title": "Attendance history",
+      "count_one": "{{count}} visit · {{members}} member(s)",
+      "count_other": "{{count}} visits · {{members}} member(s)",
+      "emptyTitle": "No visits in this period",
+      "export": "Export"
+    },
+    "absentees": {
+      "title": "Absentees",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "daysAway_one": "{{count}} day",
+      "daysAway_other": "{{count}} days",
+      "lastVisit": "Last visit {{date}}",
+      "never": "Never visited",
+      "message": "Message all",
+      "emptyTitle": "Everyone is coming",
+      "emptyMessage_one": "No active member has been away for {{count}} day.",
+      "emptyMessage_other": "No active member has been away for {{count}} days."
+    }
   }
 }

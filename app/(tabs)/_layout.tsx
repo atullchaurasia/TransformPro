@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Icon, type IconName } from '@/components';
 import { CheckinTabButton } from '@/features/navigation/CheckinTabButton';
+import { useKioskActive } from '@/store/kioskStore';
 import { useTheme } from '@/theme';
 
 function TabIcon({ name, activeName, focused, size }: { name: IconName; activeName: IconName; focused: boolean; size: number }) {
@@ -18,13 +19,15 @@ const tabIcon =
 export default function TabsLayout() {
   const { t } = useTranslation();
   const { colors } = useTheme();
+  // Kiosk mode hides the tabs so a member at the front desk can only scan (§10.4).
+  const kiosk = useKioskActive();
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textSecondary,
-        tabBarStyle: { backgroundColor: colors.tabBar, borderTopColor: colors.separator },
+        tabBarStyle: kiosk ? { display: 'none' } : { backgroundColor: colors.tabBar, borderTopColor: colors.separator },
       }}
     >
       <Tabs.Screen name="home" options={{ title: t('tabs.home'), tabBarIcon: tabIcon('home-outline', 'home') }} />

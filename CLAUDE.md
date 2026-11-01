@@ -477,3 +477,23 @@ The build is split into milestones in **`docs/ROADMAP.md`**. For each milestone:
   - `BottomSheet` doesn't pad its content: sheet bodies add `paddingHorizontal: spacing.lg` themselves and
     full-width rows use `marginHorizontal: -spacing.lg` inside that (fixed in several M04/M06 sheets).
     The photo picker and Home "+" menu now use `ActionSheet` (they open after the sheet closes).
+- 2026-11-01 — M09 check-in decisions:
+  - One state machine (`useCheckinFlow`) serves Scan QR and Search & mark. Members-list swipe, the
+    profile button and Home "+" open `/checkin?memberId=&at=` (Search & mark for that member), so
+    blocked members always get the same red card with Renew / Override.
+  - Results: green/orange and "not found" hide after 2 s; red and "Already inside" stay until handled
+    (6 s in kiosk so an unattended iPad never sticks). The scanner ignores the same payload for 5 s
+    and reads nothing while a card is shown. Only one `CameraView` runs, and only while the tab is focused.
+  - **Audit:** ordinary check-ins/outs are not audit-logged (thousands of rows); overrides (with
+    reason and the block reasons), deleted entries and auto check-outs are.
+  - `attendance.subscription_id` = the date-based plan covering the visit, or the session plan whose
+    session was used. Deleting a visit returns the session only for session plans.
+  - **Kiosk** = session-only state (`kioskStore`): tabs and header hidden, `useKeepAwake`, front camera,
+    no Renew/Override on the cards. Exit needs the PIN of whoever started it or the owner's, sharing
+    the lock screen's wrong-PIN cooldown.
+  - New setting **`checkin_sound`** (default on) — §10.4 "optional sound". Two tiny generated WAVs in
+    `assets/sounds/`, played with **expo-audio** (+ its required peer **expo-asset**), with
+    `playsInSilentMode: false` so the mute switch is respected.
+  - History and Absentees live in the Check-in tab stack (header buttons). Absentees = Active,
+    Expiring or In grace and not seen for N days; members who never came count from their joining date.
+  - Auto check-out runs at app start (check-out time = check-in + `auto_checkout_hours`).

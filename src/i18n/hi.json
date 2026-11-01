@@ -967,5 +967,122 @@
     "deleteTitle": "{{receipt}} हटाएँ?",
     "deleteMessage": "{{name}} के {{amount}} ट्रैश में चले जाएँगे और गिने नहीं जाएँगे। रसीद नंबर दोबारा उपयोग नहीं होगा।",
     "deleted": "{{receipt}} ट्रैश में गया"
+  },
+  "checkin": {
+    "mode": {
+      "scan": "QR स्कैन",
+      "search": "खोजें और दर्ज करें",
+      "today": "आज की सूची"
+    },
+    "scanHint": "कैमरा सदस्य के QR कोड की ओर करें",
+    "frontCamera": "सामने का कैमरा",
+    "sound": "आवाज़",
+    "mark": "चेक-इन",
+    "recent": "हाल के सदस्य",
+    "noRecent": "अभी कोई चेक-इन नहीं। ऊपर सदस्य खोजें।",
+    "checkOut": "चेक-आउट",
+    "checkedOutName": "{{name}} चेक-आउट हुए",
+    "inside": "अंदर",
+    "minutes_one": "{{count}} मिनट",
+    "minutes_other": "{{count}} मिनट",
+    "openProfile": "प्रोफ़ाइल खोलें",
+    "deleteEntry": "गलत एंट्री हटाएँ",
+    "deleteTitle": "{{name}} का यह चेक-इन हटाएँ?",
+    "deleteMessage": "केवल गलती होने पर उपयोग करें। इसमें इस्तेमाल हुआ सेशन वापस मिल जाएगा।",
+    "deleted": "चेक-इन हटाया गया",
+    "todayEmptyTitle": "आज अभी कोई नहीं आया",
+    "todayEmptyMessage": "स्कैनर या खोज से हुए चेक-इन यहाँ दिखेंगे।",
+    "noVisitsMonth": "इस महीने कोई विज़िट नहीं।",
+    "override": "ओवरराइड",
+    "overrideReason": "अंदर आने देने का कारण",
+    "overrideConfirm": "फिर भी चेक-इन करें",
+    "filter": {
+      "all": "सभी",
+      "inside": "अंदर",
+      "left": "चले गए"
+    },
+    "camera": {
+      "title": "कैमरा चाहिए",
+      "message": "सदस्यों के QR कोड स्कैन करने के लिए कैमरा की अनुमति दें।",
+      "denied": "कैमरा की अनुमति बंद है। iPhone सेटिंग्स → TransformPro → कैमरा में चालू करें।",
+      "allow": "कैमरा की अनुमति दें",
+      "openSettings": "सेटिंग्स खोलें"
+    },
+    "result": {
+      "checkedIn": "{{time}} पर चेक-इन",
+      "checkedOut": "{{time}} पर चेक-आउट",
+      "inside": "{{time}} से अंदर हैं",
+      "blocked": "प्रवेश की अनुमति नहीं",
+      "overridden": "ओवरराइड से अंदर आने दिया — गतिविधि लॉग में दर्ज।",
+      "seeDesk": "कृपया फ्रंट डेस्क पर मिलें।",
+      "error": {
+        "not_ours": "यह QR कोड TransformPro सदस्य कार्ड का नहीं है।",
+        "unknown_member": "इस कोड का कोई सदस्य नहीं मिला।",
+        "failed": "कुछ गलत हो गया। फिर से कोशिश करें।"
+      }
+    },
+    "warning": {
+      "expiring": "मेंबरशिप जल्द खत्म हो रही है।",
+      "grace": "मेंबरशिप खत्म — ग्रेस अवधि में।",
+      "dues": "बकाया: {{amount}}"
+    },
+    "reason": {
+      "expired": "मेंबरशिप खत्म हो गई है।",
+      "no_plan": "कोई मेंबरशिप प्लान नहीं।",
+      "upcoming": "मेंबरशिप अभी शुरू नहीं हुई।",
+      "frozen": "मेंबरशिप फ्रीज़ है।",
+      "dues": "बकाया: {{amount}}",
+      "no_sessions_left": "इस प्लान में कोई सेशन बाकी नहीं।",
+      "already_checked_in": "आज पहले ही चेक-इन हो चुका है।"
+    },
+    "kiosk": {
+      "start": "कियॉस्क मोड",
+      "started": "कियॉस्क मोड चालू — बाहर निकलने के लिए PIN चाहिए।",
+      "exit": "कियॉस्क बंद करें",
+      "exitTitle": "कियॉस्क मोड से बाहर",
+      "exitHint": "अपना PIN या मालिक का PIN डालें।",
+      "wrongPin": "गलत PIN।",
+      "cooldown": "बहुत बार गलत PIN। {{seconds}} सेकंड बाद कोशिश करें।"
+    },
+    "stats": {
+      "thisMonth": "इस महीने",
+      "streak": "लगातार",
+      "average": "औसत विज़िट",
+      "days_one": "{{count}} दिन",
+      "days_other": "{{count}} दिन"
+    },
+    "calendar": {
+      "a11y": "उपस्थिति कैलेंडर",
+      "previous": "पिछला महीना",
+      "next": "अगला महीना",
+      "visited": "{{day}} तारीख को आए",
+      "mon": "सो",
+      "tue": "मं",
+      "wed": "बु",
+      "thu": "गु",
+      "fri": "शु",
+      "sat": "श",
+      "sun": "र"
+    },
+    "history": {
+      "title": "उपस्थिति इतिहास",
+      "count_one": "{{count}} विज़िट · {{members}} सदस्य",
+      "count_other": "{{count}} विज़िट · {{members}} सदस्य",
+      "emptyTitle": "इस अवधि में कोई विज़िट नहीं",
+      "export": "एक्सपोर्ट"
+    },
+    "absentees": {
+      "title": "गैरहाज़िर",
+      "days_one": "{{count}} दिन",
+      "days_other": "{{count}} दिन",
+      "daysAway_one": "{{count}} दिन",
+      "daysAway_other": "{{count}} दिन",
+      "lastVisit": "आख़िरी विज़िट {{date}}",
+      "never": "कभी नहीं आए",
+      "message": "सभी को संदेश",
+      "emptyTitle": "सब आ रहे हैं",
+      "emptyMessage_one": "कोई सक्रिय सदस्य {{count}} दिन से गैरहाज़िर नहीं है।",
+      "emptyMessage_other": "कोई सक्रिय सदस्य {{count}} दिन से गैरहाज़िर नहीं है।"
+    }
   }
 }

@@ -40,6 +40,12 @@ export function formatDateMedium(input: string | Date | null | undefined, langua
   return date ? formatFns(date, 'd MMM yyyy', { locale: locales[language] }) : '';
 }
 
+/** e.g. "October 2026" / "अक्टूबर 2026" — calendar headers. */
+export function formatMonth(input: string | Date | null | undefined, language: LanguageCode = 'en'): string {
+  const date = toDate(input);
+  return date ? formatFns(date, 'MMMM yyyy', { locale: locales[language] }) : '';
+}
+
 /** e.g. "6:42 PM". */
 export function formatTime(input: string | Date | null | undefined, language: LanguageCode = 'en'): string {
   const date = toDate(input);

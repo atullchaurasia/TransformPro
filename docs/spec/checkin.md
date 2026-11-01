@@ -23,3 +23,10 @@ Additional:
 - **Attendance history** screen: pick date or range → list + count; export.
 - **Absentees** list: active members not seen in X days (7/14/30) → bulk message.
 - **Staff attendance**: staff check-in/out (manual), monthly staff attendance sheet.
+
+**Clarifications (M09, see CLAUDE.md Decisions Log 2026-11-01)**
+- Red results stay until handled (Renew / Override / Close); in kiosk mode they clear after 6 s and show no Renew/Override.
+- Optional sound = setting `checkin_sound` (default on); it respects the iPhone's mute switch.
+- Kiosk exit accepts the PIN of whoever started kiosk mode, or the owner's.
+- Absentees count members who never came from their joining date.
+- Plain check-ins aren't audit-logged; overrides, deleted entries and auto check-outs are.

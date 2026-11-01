@@ -47,6 +47,8 @@ export type AppSettings = {
   week_start: WeekStart;
   /** §10.2 Trash: auto-purge items older than 30 days on app open (setting to disable). */
   trash_auto_purge: boolean;
+  /** §10.4 Scan QR: "haptic feedback + optional sound". Respects the iPhone's silent switch. */
+  checkin_sound: boolean;
 };
 
 export type SettingKey = keyof AppSettings;
@@ -90,6 +92,7 @@ export const SETTINGS_DEFAULTS: AppSettings = {
   card_design: 'modern',
   week_start: 'monday',
   trash_auto_purge: true,
+  checkin_sound: true,
 };
 
 export const SETTING_KEYS = Object.keys(SETTINGS_DEFAULTS) as SettingKey[];

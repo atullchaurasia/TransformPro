@@ -17,7 +17,7 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M06 | Members: list, add/edit with plan & payment, trash | Core ops | ✅ |
 | M07 | Member profile + subscription lifecycle | Core ops | ✅ |
 | M08 | Payments, dues, refunds, receipt PDF | Core ops | ✅ |
-| M09 | Check-in: search, today's list, QR, kiosk, history | Core ops | ⬜ |
+| M09 | Check-in: search, today's list, QR, kiosk, history | Core ops | ✅ |
 | M10 | Dashboard | Core ops | ⬜ |
 | M11 | Backup, restore, export, CSV import | Data safety | ⬜ |
 | M12 | iOS build pipeline + first sideload + owner README | Data safety | ⬜ |
@@ -93,6 +93,12 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M08 | **Done when:** receipt PDF (A5 and A4) opens the share sheet and sends to WhatsApp; logo, GSTIN with CGST/SGST, terms and "Thank you" appear; Print opens AirPrint | ⬜ |
 | M08 | Collections: each date chip + Custom range, totals by mode (•••• for staff without `reports.financial`); Dues: sort, Collect / WhatsApp / Call; Refunds list + Record refund | ⬜ |
 | M08 | Delete a payment (owner) → it leaves the totals and shows in Trash → Payments; restore and delete permanently work | ⬜ |
+| M09 | **Done when:** an expired member scans → red card; Override with a reason checks them in and shows in History; a `TRANSFORMPRO:<code>` QR on another phone checks the member in (green card, "Checked in 6:42 PM") | ⬜ |
+| M09 | Expiring / dues → orange card (still checked in); frozen → red; scanning resumes after 2 s; the same QR within 5 s is ignored; haptics fire; sound plays (and stays silent with the mute switch on); Sound chip turns it off | ⬜ |
+| M09 | Scanning someone already inside → "Already inside since …" with Check out; session plan → sessions left goes down | ⬜ |
+| M09 | Kiosk mode: tabs and header hidden, screen stays awake, front camera works, red cards clear after 6 s, Exit needs your PIN or the owner's (wrong PINs → cooldown) | ⬜ |
+| M09 | Search & mark (recent + search), Today's list (All / Inside / Left, Check out, Delete wrong entry), auto check-out after the set hours on app open | ⬜ |
+| M09 | Members swipe Check-in, profile Check-in and Home "+" Mark attendance open the Check-in tab for that member; History (date chips + custom) and Absentees (7 / 14 / 30) open from the header; profile Attendance calendar + stats | ⬜ |
 | M08 | Sheets no longer touch the screen edges (filters, duplicate phone, member picker, add plan, forgot PIN); photo picker and Home "+" actions open after their sheet closes | ⬜ |
 
 ### Cross-cutting checklist (every milestone)
@@ -300,22 +306,24 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
 
 ### M09 · Check-in
 **Spec:** `checkin.md` (§10.4), `business-rules.md` §6.8
-- [ ] Segmented control: **Scan QR | Search & mark | Today's list**
-- [ ] **Scan QR:** full-screen `CameraView` (QR only); payload `TRANSFORMPRO:<member_code>`; result card for 2 s: ✅ green (photo, name, plan, days left, "Checked in 6:42 PM"), ⚠️ orange (expiring or dues, still checked in), ⛔ red (expired or frozen, with **Renew** and **Override**); haptics plus optional sound; scanning resumes automatically; the same code is ignored for 5 s
-- [ ] **Override** (owner/manager, `attendance.override_block`) with a reason, audit-logged
-- [ ] Session plans increment `sessions_used`
-- [ ] Already checked in → offer **Check out**
-- [ ] **Kiosk mode:** keep the screen awake, front-camera option, tabs hidden, PIN required to exit
-- [ ] **Search & mark:** search box + recent members → check in / check out
-- [ ] **Today's list:** in/out times, inside/left filter, manual check-out, delete a wrong entry (manager and up)
-- [ ] Auto check-out on app open
-- [ ] **Attendance history:** pick a date or range → list + count; export (register → M11)
-- [ ] **Absentees:** active members not seen in 7, 14 or 30 days; bulk message (register → M14)
-- [ ] Profile **Attendance tab:** month calendar with check-in days highlighted, list of in/out times, visits per month, streak, average visit duration
-- [ ] Wire up registers: swipe Check-in, profile Check-in
-- [ ] Staff attendance is in M19
+- [x] Segmented control: **Scan QR | Search & mark | Today's list**
+- [x] **Scan QR:** full-screen `CameraView` (QR only); payload `TRANSFORMPRO:<member_code>`; result card for 2 s: ✅ green (photo, name, plan, days left, "Checked in 6:42 PM"), ⚠️ orange (expiring or dues, still checked in), ⛔ red (expired or frozen, with **Renew** and **Override**); haptics plus optional sound; scanning resumes automatically; the same code is ignored for 5 s
+- [x] **Override** (owner/manager, `attendance.override_block`) with a reason, audit-logged
+- [x] Session plans increment `sessions_used`
+- [x] Already checked in → offer **Check out**
+- [x] **Kiosk mode:** keep the screen awake, front-camera option, tabs hidden, PIN required to exit
+- [x] **Search & mark:** search box + recent members → check in / check out
+- [x] **Today's list:** in/out times, inside/left filter, manual check-out, delete a wrong entry (manager and up)
+- [x] Auto check-out on app open
+- [x] **Attendance history:** pick a date or range → list + count; export (register → M11)
+- [x] **Absentees:** active members not seen in 7, 14 or 30 days; bulk message (register → M14)
+- [x] Profile **Attendance tab:** month calendar with check-in days highlighted, list of in/out times, visits per month, streak, average visit duration
+- [x] Wire up registers: swipe Check-in, profile Check-in
+- [x] Staff attendance is in M19
 
 **Done when:** an expired member is blocked, an override works and is logged, and a QR shown on another phone checks the member in.
+
+> Status: ✅ tsc · ✅ jest (201 tests; expired → blocked, override checks in and is audit-logged, already inside → check out, session plans use a session and get it back on delete, auto check-out at check-in + hours, streak / monthly counts / average, calendar grid, absentees, 5 s scan debounce) · ✅ expo-doctor 20/20 (added expo-audio + its peer expo-asset) · ✅ iOS bundle exports. Camera, haptics, sound and kiosk → Pending device checks. Until M13 makes member QR cards, test the scanner with any QR generator showing `TRANSFORMPRO:<member code>` on another phone.
 
 ### M10 · Dashboard
 **Spec:** `dashboard.md` (§10.1), `navigation.md` (FAB, search)
@@ -499,13 +507,14 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Home / Members header "Search" button (global search) | M01 | M06 | ✅ |
 | FAB "Add member" | M01 | M06 | ✅ |
 | FAB "Record payment" | M01 | M08 | ✅ |
-| FAB "Mark attendance" | M01 | M09 | ⬜ |
+| FAB "Mark attendance" | M01 | M09 | ✅ |
 | Onboarding "Restore a backup" | M04 | M11 | ⬜ |
 | Onboarding "Done" schedules notifications | M04 | M15 | ⬜ |
 | Members row tap + duplicate-phone "Open" → member profile (open the edit form until then) | M06 | M07 | ✅ |
 | Show ID numbers with `maskIdNumber` (Aadhaar last 4) wherever they appear in lists/profile | M06 | M07 | ✅ |
 | Settings toggle for `trash_auto_purge` (default on) | M06 | M20 | ⬜ |
-| Members swipe "Check-in" | M06 | M09 | ⬜ |
+| Settings toggle for `checkin_sound` (also a chip on the scanner for `settings.manage`) | M09 | M20 | ⬜ |
+| Members swipe "Check-in" | M06 | M09 | ✅ |
 | Members swipe "Renew" | M06 | M07 | ✅ |
 | Members swipe / profile WhatsApp and SMS with templates (+ message log) | M06/M07 | M14 | ⬜ |
 | Renew / Add plan / Change plan: offer "Share receipt" for the payment just recorded | M07 | M08 | ✅ |
@@ -521,7 +530,7 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Trash tab: expenses | M06 | M17 | ⬜ |
 | Global search: enquiries | M06 | M16 | ⬜ |
 | Profile "Collect payment" + Payments tab | M07 | M08 | ✅ |
-| Profile "Check-in" + Attendance tab | M07 | M09 | ⬜ |
+| Profile "Check-in" + Attendance tab | M07 | M09 | ✅ |
 | Profile Card / Share card / Generate QR | M07 | M13 | ⬜ |
 | Profile Messages tab | M07 | M14 | ⬜ |
 | Profile Measurements tab | M07 | M17 | ⬜ |
@@ -535,7 +544,7 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Start-up pipeline: reschedule notifications | M11 | M15 | ⬜ |
 | PT trainer picker / "My PT clients" | M05/M06 | M19 | ⬜ |
 | Permission gating on all earlier screens | M04 | M19 | ⬜ |
-| `AppGate` start-up hook (`TODO(M11)`): auto check-out, trash purge (members + payments), end finished freezes (M07), daily auto-backup | M04 | M11 | ⬜ |
+| `AppGate` start-up hook (`TODO(M11)`): auto check-out (M09), trash purge (members + payments), end finished freezes (M07) already run there; M11 adds daily auto-backup and puts all steps in the §13 order | M04 | M11 | ⬜ |
 | Security settings (lock on/off, auto-lock minutes, Face ID toggle, change PIN) — must go through `settingsStore.update` so the Keychain copy stays in sync | M04 | M20 | ⬜ |
 | Staff PINs set/reset by the owner (lock screen already lists every active staff member with a PIN) | M04 | M19 | ⬜ |
 

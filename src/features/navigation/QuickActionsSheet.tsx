@@ -11,11 +11,11 @@ import { openComingSoon } from './comingSoon';
 type QuickActionKey = 'addMember' | 'recordPayment' | 'markAttendance' | 'addEnquiry' | 'addExpense';
 type QuickAction = { key: QuickActionKey; icon: IconName; color: string; permission: PermissionKey; href?: Href; milestone?: string };
 
-// TODO(M09/M16/M17): each owning milestone replaces its `milestone` with a real `href`.
+// TODO(M16/M17): each owning milestone replaces its `milestone` with a real `href`.
 const ACTIONS: QuickAction[] = [
   { key: 'addMember', icon: 'person-add', color: brand.primary, permission: 'members.create', href: '/member/new' },
   { key: 'recordPayment', icon: 'cash', color: brand.success, permission: 'payments.create', href: '/payment/new' },
-  { key: 'markAttendance', icon: 'checkmark-done', color: brand.info, permission: 'attendance.mark', milestone: 'M09' },
+  { key: 'markAttendance', icon: 'checkmark-done', color: brand.info, permission: 'attendance.mark', href: '/checkin' },
   { key: 'addEnquiry', icon: 'chatbubbles', color: '#9333EA', permission: 'enquiries.manage', milestone: 'M16' },
   { key: 'addExpense', icon: 'receipt', color: brand.warning, permission: 'expenses.manage', milestone: 'M17' },
 ];

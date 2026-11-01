@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import type { MemberSummary } from '@/domain/memberList';
 import { firstName } from '@/domain/templates';
-import { openComingSoon } from '@/features/navigation/comingSoon';
 import { callPhone, openWhatsApp } from '@/services/messaging';
 import { toast } from '@/store/feedbackStore';
 import { useSettings } from '@/store/settingsStore';
@@ -29,8 +28,7 @@ export function useMemberRowActions() {
           }
           return;
         case 'checkin':
-          // TODO(M09): check this member in (with the §6.8 rules).
-          return openComingSoon('M09', t('members.actions.checkin'));
+          return openCheckin(m.id);
         case 'renew':
           // Renews the latest membership (or adds a first plan) — see useRenewal.
           return router.push({ pathname: '/member/[id]/renew', params: { id: m.id, mode: 'renew' } });
@@ -38,6 +36,14 @@ export function useMemberRowActions() {
     },
     [t, gym_name],
   );
+}
+
+/**
+ * Check-in tab → Search & mark for this member, which runs the §6.8 rules and shows the result
+ * card (with Override / Renew when blocked). `at` makes each tap a new request.
+ */
+export function openCheckin(memberId: string) {
+  router.push({ pathname: '/checkin', params: { memberId, at: String(Date.now()) } });
 }
 
 /** Opens the member profile (§10.2). It lives in the Members tab, so the list stays underneath. */

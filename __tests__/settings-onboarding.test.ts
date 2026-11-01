@@ -17,6 +17,7 @@ const SPEC_KEYS = [
   'backup_reminder_days', 'last_backup_at', 'theme', 'onboarding_complete', 'card_design', 'week_start',
   // Not in the §5.2 list but required elsewhere in the spec:
   'trash_auto_purge', // §10.2 "auto-purge … with setting to disable"
+  'checkin_sound', // §10.4 "haptic feedback + optional sound"
 ];
 
 describe('settings defaults (§5.2)', () => {
