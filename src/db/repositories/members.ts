@@ -103,6 +103,13 @@ export async function findMembersByPhone(db: Db, phone: string, excludeId?: stri
   return rows.map(membersRepo.fromRow);
 }
 
+/** Every phone / alt phone and member code in use, Trash included (CSV import duplicate checks). */
+export async function listPhonesAndCodes(db: Db): Promise<{ phones: Set<string>; codes: Set<string> }> {
+  const phones = await db.getAllAsync<{ p: string | null }>('SELECT phone AS p FROM members UNION SELECT alt_phone AS p FROM members WHERE alt_phone IS NOT NULL', []);
+  const codes = await db.getAllAsync<{ c: string }>('SELECT member_code AS c FROM members', []);
+  return { phones: new Set(phones.map((r) => r.p).filter((p): p is string => !!p)), codes: new Set(codes.map((r) => r.c)) };
+}
+
 export async function countMembers(db: Db): Promise<number> {
   return membersRepo.count(db);
 }

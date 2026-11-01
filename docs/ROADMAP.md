@@ -19,7 +19,7 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M08 | Payments, dues, refunds, receipt PDF | Core ops | ✅ |
 | M09 | Check-in: search, today's list, QR, kiosk, history | Core ops | ✅ |
 | M10 | Dashboard | Core ops | ✅ |
-| M11 | Backup, restore, export, CSV import | Data safety | ⬜ |
+| M11 | Backup, restore, export, CSV import | Data safety | ✅ |
 | M12 | iOS build pipeline + first sideload + owner README | Data safety | ⬜ |
 | M13 | Membership card | Growth | ⬜ |
 | M14 | Messages, templates, reminder centre, send queue | Growth | ⬜ |
@@ -103,6 +103,13 @@ order**: each one depends on the ones before it. The workflow for every mileston
 | M10 | **Done when:** with Developer → "Insert 2,000 demo members" (plus some payments / check-ins) Home opens in under ~0.5 s and pull-to-refresh works | ⬜ |
 | M10 | Charts (collections bar, attendance line, peak hours) and the donut look right in light + dark, 7/30 toggle works, labels don't collide; staff without `reports.financial` see •••• and no collections chart | ⬜ |
 | M10 | Backup banner shows (never backed up) and opens the M11 placeholder; Birthdays/Anniversaries "Wish" opens WhatsApp | ⬜ |
+| M11 | **Done when:** More → Backup & Restore → Back up now → save to Files (and once to a PC via the Apple Devices app) → delete the app → reinstall → onboarding "Restore a backup" → pick the file → type RESTORE → lands on the lock screen with every member, payment and photo back | ⬜ |
+| M11 | Restore over existing data: owner PIN required (wrong PINs → cooldown); a PreRestore safety copy appears in "Backups on this iPhone"; History shows "Restored backup…" | ⬜ |
+| M11 | Bad files: a random file, a renamed .zip, an edited backup (checksum) and a backup from a newer app version are all refused with a clear message | ⬜ |
+| M11 | Daily automatic backup appears in auto-backups on the first open of a day (one per day, 7 kept); manual backups keep 5; Files app → On My iPhone → TransformPro shows the folders | ⬜ |
+| M11 | Export: each dataset as XLSX and CSV, date range + All time, Everything = one workbook; opens correctly in Excel / Numbers (₹ and Hindi names readable in CSV); Members "Export selected" and Attendance history Export | ⬜ |
+| M11 | CSV import: share the template, fill it in Excel, import — preview, column matching, per-row errors, duplicate skipping, plans + payments created | ⬜ |
+| M11 | Storage full during backup / export shows the friendly message and leaves the data untouched | ⬜ |
 | M08 | Sheets no longer touch the screen edges (filters, duplicate phone, member picker, add plan, forgot PIN); photo picker and Home "+" actions open after their sheet closes | ⬜ |
 
 ### Cross-cutting checklist (every milestone)
@@ -353,20 +360,22 @@ pm test and expo-doctor pass, and the blank app opens in Expo Go on the iPhone.
 
 ### M11 · Backup, restore, export, import
 **Spec:** `backup-export.md` (§10.15–10.16), `members.md` (CSV import), CLAUDE.md §13
-- [ ] **Backup file** `TransformPro-Backup-<gymname>-YYYY-MM-DD-HHmm.transformpro` (ZIP via jszip): `manifest.json` (app version, schema `user_version`, created_at, gym name, counts per table, SHA-256 of `db.sqlite`); `db.sqlite` made consistent via `wal_checkpoint(TRUNCATE)` or `VACUUM INTO`; `photos/…` (member, progress and receipt photos, gym logo)
-- [ ] **Backup now:** build in the cache dir → show size → share sheet (Files, AirDrop, WhatsApp, Email) → copy to `Documents/backups/` (keep the latest 5) → set `last_backup_at` → audit log
-- [ ] **Daily automatic backup** on first open each day to `Documents/auto-backups/` (keep 7), with the warning that it does *not* protect against losing the phone
-- [ ] Before replacing the DB file: close the connection and reset the handle/writer in `src/db/client.ts` (add a `closeDatabase()`), so no queued write hits the old file
-- [ ] **Restore:** pick a `.transformpro` file or a local backup → validate (it's a ZIP, has a manifest, checksum matches, schema ≤ the app's) → summary ("Backup from 12 Oct 2026, 1,240 members, 3,980 payments… will REPLACE all data") → type `RESTORE` + owner PIN → safety backup of the current DB → close DB → replace DB and photos → reopen → migrate → remount the root/lock screen → audit log
-- [ ] **Backup screen:** last backup date, member and payment counts, database size, list of local backups (share, restore, delete), "How to keep your data safe" help
-- [ ] Wire up the onboarding "Restore" step and the dashboard "Back up now" banner
-- [ ] **Export** (`services/export.ts`): members, payments, attendance, expenses, enquiries and measurements as XLSX or CSV for any date range; "Export everything" = one workbook with a sheet per table; shared via the share sheet
-- [ ] Wire up registers: members "export selected", attendance history export
-- [ ] **CSV import:** share a sample template; pick CSV → preview first 20 rows → map columns → per-row validation errors → import valid rows in one transaction; optional plan name, start/end and amount-paid columns create subscriptions; option to skip duplicate phones
-- [ ] **Start-up pipeline** (§13): migrations → auto check-out → trash auto-purge → daily auto-backup → reschedule notifications (hook for M15), each step isolated so one failure never blocks launch
-- [ ] Storage-full handling during backup
+- [x] **Backup file** `TransformPro-Backup-<gymname>-YYYY-MM-DD-HHmm.transformpro` (ZIP via jszip): `manifest.json` (app version, schema `user_version`, created_at, gym name, counts per table, SHA-256 of `db.sqlite`); `db.sqlite` made consistent via `wal_checkpoint(TRUNCATE)` or `VACUUM INTO`; `photos/…` (member, progress and receipt photos, gym logo)
+- [x] **Backup now:** build in the cache dir → show size → share sheet (Files, AirDrop, WhatsApp, Email) → copy to `Documents/backups/` (keep the latest 5) → set `last_backup_at` → audit log
+- [x] **Daily automatic backup** on first open each day to `Documents/auto-backups/` (keep 7), with the warning that it does *not* protect against losing the phone
+- [x] Before replacing the DB file: close the connection and reset the handle/writer in `src/db/client.ts` (add a `closeDatabase()`), so no queued write hits the old file
+- [x] **Restore:** pick a `.transformpro` file or a local backup → validate (it's a ZIP, has a manifest, checksum matches, schema ≤ the app's) → summary ("Backup from 12 Oct 2026, 1,240 members, 3,980 payments… will REPLACE all data") → type `RESTORE` + owner PIN → safety backup of the current DB → close DB → replace DB and photos → reopen → migrate → remount the root/lock screen → audit log
+- [x] **Backup screen:** last backup date, member and payment counts, database size, list of local backups (share, restore, delete), "How to keep your data safe" help
+- [x] Wire up the onboarding "Restore" step and the dashboard "Back up now" banner
+- [x] **Export** (`services/export.ts`): members, payments, attendance, expenses, enquiries and measurements as XLSX or CSV for any date range; "Export everything" = one workbook with a sheet per table; shared via the share sheet
+- [x] Wire up registers: members "export selected", attendance history export
+- [x] **CSV import:** share a sample template; pick CSV → preview first 20 rows → map columns → per-row validation errors → import valid rows in one transaction; optional plan name, start/end and amount-paid columns create subscriptions; option to skip duplicate phones
+- [x] **Start-up pipeline** (§13): migrations → auto check-out → trash auto-purge → daily auto-backup → reschedule notifications (hook for M15), each step isolated so one failure never blocks launch
+- [x] Storage-full handling during backup
 
 **Done when:** back up → save to Files → delete and reinstall the app → restore → every member, payment and photo is back.
+
+> Status: ✅ tsc · ✅ jest (213 tests; backup names / pruning / once-a-day auto backup, manifest + checksum + schema checks, archive pack→unpack byte-for-byte, export sheets and workbook read-back, CSV auto-mapping / dates / per-row errors / duplicates, CSV rows imported with plans and payments against real SQLite) · ✅ expo-doctor 20/20 · ✅ iOS bundle exports. Also made date parsing faster (dashboard load back under its guard). The backup → reinstall → restore round trip needs a real device → Pending device checks.
 
 ### M12 · iOS build pipeline + first sideload
 **Spec:** `build-ipa.md` (§18), `readme-guide.md` (§20)
@@ -514,7 +523,7 @@ Features built as stubs early on that must be finished later. The owning milesto
 | FAB "Add member" | M01 | M06 | ✅ |
 | FAB "Record payment" | M01 | M08 | ✅ |
 | FAB "Mark attendance" | M01 | M09 | ✅ |
-| Onboarding "Restore a backup" | M04 | M11 | ⬜ |
+| Onboarding "Restore a backup" | M04 | M11 | ✅ |
 | Onboarding "Done" schedules notifications | M04 | M15 | ⬜ |
 | Members row tap + duplicate-phone "Open" → member profile (open the edit form until then) | M06 | M07 | ✅ |
 | Show ID numbers with `maskIdNumber` (Aadhaar last 4) wherever they appear in lists/profile | M06 | M07 | ✅ |
@@ -526,7 +535,7 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Renew / Add plan / Change plan: offer "Share receipt" for the payment just recorded | M07 | M08 | ✅ |
 | Receipt "WhatsApp" summary uses the `payment_receipt` template | M08 | M14 | ⬜ |
 | Members bulk "Send message" | M06 | M14 | ⬜ |
-| Members bulk "Export selected" | M06 | M11 | ⬜ |
+| Members bulk "Export selected" | M06 | M11 | ✅ |
 | Members bulk "Change branch" + Branch filter | M06 | M19 | ⬜ |
 | Success sheet "Send welcome" (templated) | M06 | M14 | ⬜ |
 | Success sheet "Share receipt" | M06 | M08 | ✅ |
@@ -541,10 +550,10 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Profile Messages tab | M07 | M14 | ⬜ |
 | Profile Measurements tab | M07 | M17 | ⬜ |
 | Dues "WhatsApp reminder" (templated) | M08 | M14 | ⬜ |
-| Attendance history export | M09 | M11 | ⬜ |
+| Attendance history export | M09 | M11 | ✅ |
 | Absentees bulk message | M09 | M14 | ⬜ |
 | Dashboard "Send wishes" (plain WhatsApp wishes now; templates in M14) | M10 | M14 | ⬜ |
-| Dashboard "Back up now" banner | M10 | M11 | ⬜ |
+| Dashboard "Back up now" banner | M10 | M11 | ✅ |
 | Dashboard "Expenses" card → today's expenses list | M10 | M17 | ⬜ |
 | Dashboard "Enquiry follow-ups due" row → follow-ups list | M10 | M16 | ⬜ |
 | FAB "Add enquiry" | M01 | M16 | ⬜ |
@@ -552,7 +561,7 @@ Features built as stubs early on that must be finished later. The owning milesto
 | Start-up pipeline: reschedule notifications | M11 | M15 | ⬜ |
 | PT trainer picker / "My PT clients" | M05/M06 | M19 | ⬜ |
 | Permission gating on all earlier screens | M04 | M19 | ⬜ |
-| `AppGate` start-up hook (`TODO(M11)`): auto check-out (M09), trash purge (members + payments), end finished freezes (M07) already run there; M11 adds daily auto-backup and puts all steps in the §13 order | M04 | M11 | ⬜ |
+| `AppGate` start-up hook (`TODO(M11)`): auto check-out (M09), trash purge (members + payments), end finished freezes (M07) already run there; M11 adds daily auto-backup and puts all steps in the §13 order | M04 | M11 | ✅ |
 | Security settings (lock on/off, auto-lock minutes, Face ID toggle, change PIN) — must go through `settingsStore.update` so the Keychain copy stays in sync | M04 | M20 | ⬜ |
 | Staff PINs set/reset by the owner (lock screen already lists every active staff member with a PIN) | M04 | M19 | ⬜ |
 

@@ -1,28 +1,46 @@
 // Date-only helpers (spec §6.2). Every stored date is a LOCAL calendar day 'YYYY-MM-DD'.
 // All day maths goes through date-fns calendar functions — never milliseconds (CLAUDE.md §1).
-import { addDays, addMonths, addYears, differenceInCalendarDays, format, getDate, isValid, parse } from 'date-fns';
+import { addDays, addMonths, addYears, differenceInCalendarDays, getDate, isValid } from 'date-fns';
 
 import type { DurationUnit, ISODate } from '@/db/models';
 
 /** Sessions plans are valid for this many days unless the plan says otherwise (§6.2). */
 export const DEFAULT_SESSION_VALIDITY_DAYS = 90;
 
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+/**
+ * 'YYYY-MM-DD' → local-midnight Date, or null when it isn't a real calendar day.
+ * Hand-rolled instead of date-fns `parse`: statuses for thousands of members call this tens
+ * of thousands of times per screen, and `parse` made the dashboard miss its time budget.
+ */
+function toLocalDay(day: string): Date | null {
+  const m = ISO_DATE.exec(day);
+  if (!m) return null;
+  const y = Number(m[1]);
+  const mo = Number(m[2]) - 1;
+  const d = Number(m[3]);
+  const date = new Date(y, mo, d);
+  // Rejects 2026-02-30 etc. (Date would silently roll it over to March).
+  return date.getFullYear() === y && date.getMonth() === mo && date.getDate() === d ? date : null;
+}
 
 /** 'YYYY-MM-DD' → local-midnight Date. Throws on invalid input so bad data never slips into maths. */
 export function parseDay(day: ISODate): Date {
-  const date = ISO_DATE.test(day) ? parse(day, 'yyyy-MM-dd', new Date(2000, 0, 1)) : new Date(NaN);
-  if (!isValid(date)) throw new Error(`Invalid date: ${day}`);
+  const date = toLocalDay(day);
+  if (!date) throw new Error(`Invalid date: ${day}`);
   return date;
 }
 
 export function isISODate(value: unknown): value is ISODate {
-  if (typeof value !== 'string' || !ISO_DATE.test(value)) return false;
-  return isValid(parse(value, 'yyyy-MM-dd', new Date(2000, 0, 1)));
+  return typeof value === 'string' && toLocalDay(value) !== null;
 }
 
+const pad2 = (n: number) => (n < 10 ? `0${n}` : String(n));
+
 export function formatDay(date: Date): ISODate {
-  return format(date, 'yyyy-MM-dd');
+  if (!isValid(date)) throw new Error('Invalid date');
+  return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
 }
 
 /** Today's local calendar date. Pass `now` in tests. */

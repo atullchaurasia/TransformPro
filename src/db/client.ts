@@ -33,6 +33,26 @@ export async function initDatabase(db: SQLiteDatabase): Promise<void> {
   writer = createWriter(db, () => useDataVersionStore.getState().bump());
 }
 
+/** The expo-sqlite connection itself — only for SQLite's online-backup API (§10.15). */
+export function getSqliteDatabase(): SQLiteDatabase {
+  if (!database) throw new Error('Database not initialised yet');
+  return database;
+}
+
+/**
+ * Before the database FILE is replaced (restore, §10.15): wait for queued writes, drop the
+ * handle and writer so nothing new can reach the old file, then close the connection.
+ * The `SQLiteProvider` is unmounted right after and remounted on the new file.
+ */
+export async function closeDatabase(): Promise<void> {
+  const db = database;
+  const w = writer;
+  writer = null;
+  database = null;
+  await w?.idle();
+  await db?.closeAsync();
+}
+
 /** The open connection, for reads. Throws if called before the DB is initialised. */
 export function getDb(): Db {
   if (!database) throw new Error('Database not initialised yet');

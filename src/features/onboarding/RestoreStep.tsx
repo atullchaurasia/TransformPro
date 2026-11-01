@@ -1,8 +1,8 @@
+import { router } from 'expo-router';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppText, Button, Card, Icon } from '@/components';
-import { openComingSoon } from '@/features/navigation/comingSoon';
 import { useTheme } from '@/theme';
 
 import { StepShell } from './StepShell';
@@ -25,13 +25,8 @@ export function RestoreStep() {
           <AppText variant="subhead" tone="secondary" align="center">
             {t('onboarding.restore.cardBody')}
           </AppText>
-          {/* TODO(M11): open the real restore flow (pick a .transformpro file → restore → reload). */}
-          <Button
-            label={t('onboarding.restore.button')}
-            icon="folder-open-outline"
-            variant="secondary"
-            onPress={() => openComingSoon('M11', t('onboarding.restore.button'))}
-          />
+          {/* After a restore the app reopens on the restored data, so onboarding is skipped. */}
+          <Button label={t('onboarding.restore.button')} icon="folder-open-outline" variant="secondary" onPress={() => router.push('/backup/restore')} />
         </View>
       </Card>
     </StepShell>

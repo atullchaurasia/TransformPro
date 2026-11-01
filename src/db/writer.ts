@@ -1,6 +1,9 @@
 import type { Db, RootDb } from './types';
 
-export type Writer = <T>(task: (tx: Db) => Promise<T>) => Promise<T>;
+export type Writer = (<T>(task: (tx: Db) => Promise<T>) => Promise<T>) & {
+  /** Resolves once every queued write has finished (before closing the DB for a restore). */
+  idle: () => Promise<void>;
+};
 
 /**
  * Serialised write transactions on the MAIN connection.
@@ -16,7 +19,7 @@ export type Writer = <T>(task: (tx: Db) => Promise<T>) => Promise<T>;
 export function createWriter(db: RootDb, onCommitted?: () => void): Writer {
   let tail: Promise<unknown> = Promise.resolve();
 
-  return function write<T>(task: (tx: Db) => Promise<T>): Promise<T> {
+  function write<T>(task: (tx: Db) => Promise<T>): Promise<T> {
     const run = async (): Promise<T> => {
       let result: T | undefined;
       await db.withTransactionAsync(async () => {
@@ -28,5 +31,7 @@ export function createWriter(db: RootDb, onCommitted?: () => void): Writer {
     const next = tail.then(run, run);
     tail = next.catch(() => undefined);
     return next;
-  };
+  }
+
+  return Object.assign(write, { idle: () => tail.then(() => undefined) });
 }

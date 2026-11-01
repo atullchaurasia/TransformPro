@@ -43,3 +43,9 @@ list of local backups (share / restore / delete), "How to keep your data safe" h
 - Export individual datasets (members, payments, attendance, expenses, enquiries,
   measurements) as XLSX/CSV for any date range.
 - "Export everything" → one XLSX workbook with one sheet per table.
+
+**Clarifications (M11, see CLAUDE.md Decisions Log 2026-11-01)**
+- The consistent copy uses SQLite's online backup API (includes WAL pages).
+- A safety copy is taken before every restore (`TransformPro-PreRestore-…`, last 3 kept in auto-backups).
+- On a fresh install (no owner yet) restore asks only for RESTORE; otherwise RESTORE + owner PIN.
+- CSV export holds one dataset; several datasets go in one XLSX workbook.

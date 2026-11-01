@@ -66,9 +66,9 @@ export const MORE_MENU: MoreGroup[] = [
   {
     key: 'data',
     items: [
-      { key: 'backup', icon: 'cloud-download', color: brand.success, milestone: 'M11' },
-      { key: 'importMembers', icon: 'document-attach', color: '#0891B2', milestone: 'M11' },
-      { key: 'exportData', icon: 'share', color: '#4F46E5', milestone: 'M11' },
+      { key: 'backup', icon: 'cloud-download', color: brand.success, milestone: null },
+      { key: 'importMembers', icon: 'document-attach', color: '#0891B2', milestone: null },
+      { key: 'exportData', icon: 'share', color: '#4F46E5', milestone: null },
       { key: 'trash', icon: 'trash', color: brand.danger, milestone: null },
       { key: 'activityLog', icon: 'list', color: brand.slate, milestone: 'M19' },
     ],

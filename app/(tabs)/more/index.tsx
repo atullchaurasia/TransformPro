@@ -49,6 +49,9 @@ export default function MoreScreen() {
     const planCategory = PLAN_SEGMENT_FOR[item.key];
     if (planCategory) return router.push({ pathname: '/more/plans', params: { category: planCategory } });
     if (item.key === 'trash') return router.push('/more/trash');
+    if (item.key === 'backup') return router.push('/backup');
+    if (item.key === 'exportData') return router.push('/export');
+    if (item.key === 'importMembers') return router.push('/import');
     if (item.key === 'lockNow') return void lockNow();
     if (item.key === 'switchUser') return void switchUser();
     // TODO(Mxx): each owning milestone (see moreMenu.ts) routes to its real screen here.

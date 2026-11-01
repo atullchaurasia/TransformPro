@@ -1,9 +1,9 @@
 import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppText, Icon } from '@/components';
-import { openComingSoon } from '@/features/navigation/comingSoon';
 import { resolvePhotoUri } from '@/services/photos';
 import { useCurrentStaff } from '@/store/sessionStore';
 import { useSettings } from '@/store/settingsStore';
@@ -47,8 +47,7 @@ export function BackupBanner({ backup }: { backup: DashboardData['backup'] }) {
   if (!backup.due) return null;
   return (
     <Pressable
-      // TODO(M11): open Backup & Restore.
-      onPress={() => openComingSoon('M11', t('dashboard.backup.now'))}
+      onPress={() => router.push('/backup')}
       accessibilityRole="button"
       style={{ marginHorizontal: spacing.lg, padding: spacing.md, borderRadius: radius.lg, backgroundColor: colors.warningSoft, flexDirection: 'row', alignItems: 'center', gap: spacing.md }}
     >

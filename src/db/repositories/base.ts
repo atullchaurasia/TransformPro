@@ -23,7 +23,16 @@ export type TableName =
   | 'audit_log';
 
 export const camelToSnake = (key: string) => key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`);
-export const snakeToCamel = (col: string) => col.replace(/_([a-z0-9])/g, (_, c: string) => c.toUpperCase());
+// Cached: lists convert the same few dozen column names for thousands of rows.
+const camelCache = new Map<string, string>();
+export const snakeToCamel = (col: string) => {
+  let key = camelCache.get(col);
+  if (key === undefined) {
+    key = col.replace(/_([a-z0-9])/g, (_, c: string) => c.toUpperCase());
+    camelCache.set(col, key);
+  }
+  return key;
+};
 
 type Row = Record<string, unknown>;
 

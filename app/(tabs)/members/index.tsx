@@ -19,6 +19,7 @@ import { openMember, useMemberRowActions } from '@/features/members/useMemberRow
 import { useMembersList } from '@/features/members/useMembersList';
 import { HeaderIconButton } from '@/features/navigation/HeaderIconButton';
 import { openComingSoon } from '@/features/navigation/comingSoon';
+import { useExportSelection } from '@/store/exportSelectionStore';
 import { confirm, toast } from '@/store/feedbackStore';
 import { useCurrentStaff } from '@/store/sessionStore';
 import { useSettings } from '@/store/settingsStore';
@@ -73,7 +74,10 @@ export default function MembersScreen() {
   const onBulk = async (a: BulkAction) => {
     if (chosen.length === 0) return toast.info(t('members.bulk.pickFirst'));
     if (a === 'message') return openComingSoon('M14', t('members.bulk.message')); // TODO(M14): send queue
-    if (a === 'export') return openComingSoon('M11', t('members.bulk.export')); // TODO(M11): export selected
+    if (a === 'export') {
+      useExportSelection.getState().set(chosen.map((m) => m.id));
+      return router.push({ pathname: '/export', params: { dataset: 'members' } });
+    }
     if (a === 'branch') return openComingSoon('M19', t('members.bulk.branch')); // TODO(M19): change branch
     if (a === 'trainer') return setSheet('trainer');
     if (await confirm({ title: t('members.trashTitle', { count: chosen.length }), message: t('members.trashMessage'), destructive: true, confirmLabel: t('members.bulk.trash') })) {

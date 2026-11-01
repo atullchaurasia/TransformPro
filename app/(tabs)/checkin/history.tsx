@@ -1,5 +1,5 @@
 import { FlashList } from '@shopify/flash-list';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +11,6 @@ import { useCan } from '@/features/auth/permissions';
 import { useVisits } from '@/features/checkin/useVisits';
 import { VisitRow } from '@/features/checkin/VisitRow';
 import { openMember } from '@/features/members/useMemberRowActions';
-import { openComingSoon } from '@/features/navigation/comingSoon';
 import { DateRangeBar } from '@/features/payments/DateRangeBar';
 import { useSettings } from '@/store/settingsStore';
 import { useTheme } from '@/theme';
@@ -50,8 +49,9 @@ export default function AttendanceHistoryScreen() {
         <AppText variant="subhead" tone="secondary">
           {t('checkin.history.count', { count: v.rows?.length ?? 0, members })}
         </AppText>
-        {/* TODO(M11): export attendance for this range (CSV / XLSX). */}
-        {canExport ? <Button label={t('checkin.history.export')} icon="share-outline" variant="ghost" size="sm" onPress={() => openComingSoon('M11', t('checkin.history.export'))} /> : null}
+        {canExport ? (
+          <Button label={t('checkin.history.export')} icon="share-outline" variant="ghost" size="sm" onPress={() => router.push({ pathname: '/export', params: { dataset: 'attendance', from: range.from, to: range.to } })} />
+        ) : null}
       </View>
       <View style={{ flex: 1 }}>{body()}</View>
     </View>

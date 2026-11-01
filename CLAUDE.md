@@ -517,3 +517,34 @@ The build is split into milestones in **`docs/ROADMAP.md`**. For each milestone:
     neighbours pass the dataviz CVD check; the legend shows names and counts (No-plan grey and the
     bright dark-mode steps are accepted with that secondary encoding).
   - Peak hours use `strftime('%H', check_in_at, 'localtime')`, i.e. the phone's time zone.
+- 2026-11-01 — M11 backup / export / import decisions:
+  - **Consistent DB copy** = SQLite's online backup (`backupDatabaseAsync`) into a temp file — it
+    includes WAL pages, which is what `wal_checkpoint`/`VACUUM INTO` are for in §10.15.
+  - **Archive** (`services/backupArchive.ts`, pure + tested): files are STOREd (JPEG/SQLite barely
+    compress) and streamed to disk in chunks; manifest also records `format: 1` and `photoCount`.
+    Restored photo paths must be under `photos/` with no `..`. Shared with UTI `public.data` so iOS
+    doesn't add ".zip". Photos are read into memory to build the zip — fine for a typical gym; a
+    very large photo library would need a streaming rewrite.
+  - **Folders:** manual copies `Documents/backups` (keep 5); daily automatic copies and the safety
+    copy taken before every restore (`TransformPro-PreRestore-…`, keep 3) in `Documents/auto-backups`.
+    Automatic copies don't update `last_backup_at` (they don't protect against losing the phone).
+  - **Restore:** inspect (zip, manifest, SHA-256, schema ≤ app) → RESTORE + owner PIN (sharing the
+    lock screen's cooldown; no PIN on a fresh install) → PreRestore backup (if it fails nothing is
+    touched) → `closeDatabase()` (waits for the write queue) → `DatabaseGate` unmounts the provider →
+    new DB and photos are **staged** under temporary names first, then swapped in (old -wal/-shm
+    deleted) → provider remounts (migrations run) → session locked → audit `backup.restore`.
+    `backup/restore` is outside the route guards so onboarding can reach it.
+  - **Start-up pipeline** (`features/app/startup.ts`): auto check-out → end finished freezes →
+    trash purge (members, payments) → daily auto-backup → `TODO(M15)` notifications; sequential,
+    each step isolated, in the background.
+  - **Export:** column definitions are pure (`@/domain/exportData`); money as rupee numbers, dates in
+    the gym's format, refunds negative. CSV has a UTF-8 BOM (Excel on Windows) and holds one dataset;
+    several datasets / Everything = one XLSX with a sheet per table. "Export selected" passes the
+    member ids through `exportSelectionStore`.
+  - **CSV import:** only name and mobile required; joining date defaults to today; dates accept
+    YYYY-MM-DD or the gym's format; duplicates checked against every phone/alt phone (Trash too)
+    and repeats inside the file; plan names must match an active plan; imported plans charge no
+    admission fee; amount paid is a cash payment dated the plan start. All valid rows go in ONE
+    transaction (`repositories/memberImport.ts`).
+  - **Performance:** `parseDay`/`formatDay`/`isISODate` are hand-rolled (date-fns `parse`/`format`
+    were the dashboard's bottleneck); column-name conversion is cached.

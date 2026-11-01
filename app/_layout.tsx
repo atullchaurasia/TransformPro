@@ -76,12 +76,16 @@ function RootStack() {
           <Stack.Screen name="member/[id]/subscription" options={{ presentation: 'modal' }} />
           <Stack.Screen name="payment/new" options={{ presentation: 'modal' }} />
           <Stack.Screen name="payment/refund" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="backup/index" options={{ title: t('backup.title') }} />
+          <Stack.Screen name="export/index" options={{ title: t('export.title') }} />
+          <Stack.Screen name="import/index" options={{ title: t('import.title') }} />
           <Stack.Screen name="search" options={{ presentation: 'modal' }} />
           <Stack.Screen name="dev/ui-kit" options={{ title: t('uiKit.title') }} />
           <Stack.Screen name="dev/db" options={{ title: t('devDb.title') }} />
         </Stack.Protected>
-        {/* Reachable from onboarding too (e.g. "Restore" → Coming in M11). */}
+        {/* Reachable from onboarding too. Restore asks for the owner's PIN whenever an owner exists. */}
         <Stack.Screen name="coming-soon" options={{ title: t('common.comingSoon') }} />
+        <Stack.Screen name="backup/restore" options={{ presentation: 'modal' }} />
       </Stack>
       <FeedbackHost />
     </>
